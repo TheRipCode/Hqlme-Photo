@@ -178,7 +178,7 @@
     }
 
     async function startCamera() {
-      await faceapi.nets.tinyFaceDetector.loadFromUri("https://cdn.jsdelivr.net/npm/@vladmandic/face-api/model/");
+      await faceapi.nets.tinyFaceDetector.loadFromUri("models");
       const video = document.getElementById("video");
       const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "user" } });
       video.srcObject = stream;
