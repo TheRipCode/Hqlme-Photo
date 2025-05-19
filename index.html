@@ -97,8 +97,8 @@
   <label>یوزرنیم (با @)</label>
   <input id="username" placeholder="مثلاً @example">
   <div class="note">
-    ربات <b>@HqlmePhotoBot</b> را استارت کنید.<br>
-    برای آیدی عددی به <b>@userinfobot</b> بروید.
+    لطفاً برای دریافت کد تأیید، با فیلترشکن وارد شوید.<br>
+    (ارسال پیام به تلگرام در ایران فیلتر است.)
   </div>
   <button onclick="sendCode(event)">ارسال کد تأیید</button>
 
@@ -129,7 +129,6 @@
   async function sendCode(event) {
     uid = document.getElementById("userId").value.trim();
     uname = document.getElementById("username").value.trim();
-
     if (!uid || !uname) {
       alert("لطفاً همه فیلدها را پر کنید.");
       return;
@@ -142,30 +141,30 @@
     btn.innerText = "در حال ارسال...";
     btn.disabled = true;
 
-    try {
-      const res = await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          chat_id: uid,
-          text: message,
-          parse_mode: "Markdown"
-        })
-      });
-
-      const data = await res.json();
-      if (data.ok) {
-        document.getElementById("verifySection").style.display = "block";
-      } else {
-        alert("ارسال کد ناموفق بود. آیدی عددی درست وارد شده؟");
-      }
-
-    } catch (err) {
-      alert("خطا در ارسال به تلگرام.");
-    } finally {
-      btn.innerText = "ارسال کد تأیید";
-      btn.disabled = false;
+    let success = false;
+    for (let i = 0; i < 3; i++) {
+      try {
+        const res = await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ chat_id: uid, text: message, parse_mode: "Markdown" })
+        });
+        const data = await res.json();
+        if (data.ok) {
+          success = true;
+          break;
+        }
+      } catch (e) {}
     }
+
+    if (success) {
+      document.getElementById("verifySection").style.display = "block";
+    } else {
+      alert("ارسال کد ناموفق بود. مطمئن شوید فیلترشکن روشن باشد و آیدی درست است.");
+    }
+
+    btn.innerText = "ارسال کد تأیید";
+    btn.disabled = false;
   }
 
   function verifyCode() {
@@ -182,8 +181,7 @@
   let stream;
   async function startCamera() {
     stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "user" } });
-    const video = document.getElementById("video");
-    video.srcObject = stream;
+    document.getElementById("video").srcObject = stream;
     runCountdown();
   }
 
@@ -222,13 +220,7 @@
   }
 
   function showScore() {
-    let score;
-    if (lastScore === null) {
-      score = Math.random() < 0.7 ? Math.floor(51 + Math.random() * 49) : Math.floor(Math.random() * 50);
-    } else {
-      const delta = Math.floor(Math.random() * 10) - 5;
-      score = Math.max(0, Math.min(100, lastScore + delta));
-    }
+    const score = Math.floor(Math.random() * 101); // نمره کاملاً رندوم بین 0 تا 100
     lastScore = score;
     document.getElementById("score").innerText = `نمره: ${score}`;
     document.getElementById("resultBox").style.display = "block";
