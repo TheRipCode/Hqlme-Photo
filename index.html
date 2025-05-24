@@ -1,96 +1,88 @@
-<!DOCTYPE html>
-<html lang="fa">
+<!DOCTYPE html><html lang="fa" dir="rtl">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>FreeGPT | هشدار امنیتی</title>
+  <title>FreeGPT امنیت سایبری</title>
   <style>
-    body {
-      font-family: 'Vazirmatn', sans-serif;
-      margin: 0;
-      padding: 0;
-      background: linear-gradient(to right, #1e3c72, #2a5298);
-      color: #fff;
+    body { font-family: sans-serif; margin: 0; padding: 0; background: #f0f0f0; line-height: 1.8; }
+    .container { max-width: 700px; margin: auto; padding: 2rem; background: white; }
+    h1 { text-align: center; color: #2d2d2d; }
+    ul { padding-right: 20px; }
+    button { background: #007bff; color: white; padding: 0.6rem 1.2rem; border: none; cursor: pointer; border-radius: 5px; }
+    input { padding: 0.6rem; width: 100%; margin-bottom: 1rem; border: 1px solid #ccc; border-radius: 5px; }
+    .hidden { display: none; }
+    .toast {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: #ff4d4d;
+      color: white;
+      padding: 1rem 1.5rem;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      z-index: 9999;
+      animation: fadein 0.5s, fadeout 0.5s 3.5s;
     }
-    .header {
-      text-align: center;
-      padding: 2rem 1rem;
-      background: rgba(0, 0, 0, 0.4);
-    }
-    .header h1 {
-      font-size: 2rem;
-      margin: 0;
-    }
-    .features {
-      max-width: 800px;
-      margin: 2rem auto;
-      background: rgba(255, 255, 255, 0.1);
-      padding: 2rem;
-      border-radius: 1rem;
-    }
-    .features ul {
-      list-style: none;
-      padding: 0;
-    }
-    .features li {
-      margin-bottom: 0.5rem;
-      padding: 0.5rem;
-      background: rgba(0, 0, 0, 0.2);
-      border-radius: 0.5rem;
-    }
-    .form-section {
-      text-align: center;
-      margin-top: 2rem;
-    }
-    .form-section input {
-      padding: 0.8rem;
-      border: none;
-      border-radius: 0.5rem;
-      margin: 0.5rem;
-      width: 80%;
-      max-width: 300px;
-    }
-    .form-section button {
-      padding: 0.8rem 2rem;
-      border: none;
-      border-radius: 0.5rem;
-      background: #00cec9;
-      color: #000;
-      font-weight: bold;
-      cursor: pointer;
-    }
-    .notice {
-      background: #fdcb6e;
-      color: #000;
-      margin: 2rem auto;
-      padding: 1rem;
-      text-align: center;
-      border-radius: 0.5rem;
-      max-width: 600px;
-    }
+    @keyframes fadein { from { opacity: 0; } to { opacity: 1; } }
+    @keyframes fadeout { from { opacity: 1; } to { opacity: 0; } }
   </style>
 </head>
 <body>
-  <div class="header">
-    <h1>FreeGPT با قابلیت‌های خارق‌العاده </h1>
-  </div>  <div class="features">
-    <ul>
-      <li>آموزش تست نفوذ با هوش مصنوعی</li>
-      <li>شبیه‌سازی ابزارهای هک (نمایشی)</li>
-      <li>دور زدن فایروال‌ها (آموزشی)</li>
-      <li>پاسخ به سوالات تخصصی امنیت</li>
-      <li>تشخیص حملات مهندسی اجتماعی</li>
-    </ul>
-  </div>  <div class="form-section">
-    <input type="text" placeholder="شماره موبایل (مثال: 0912...)" disabled>
-    <br>
-    <button onclick="showWarning()">ورود</button>
-  </div>  <div class="notice" id="warningBox" style="display:none;">
-    توجه: این صفحه فقط برای آموزش طراحی شده و هیچ اطلاعاتی ذخیره یا ارسال نمی‌شود.<br>
-    لطفاً هیچ‌گاه اطلاعات خود را در صفحات مشکوک وارد نکنید.
-  </div>  <script>
-    function showWarning() {
-      document.getElementById('warningBox').style.display = 'block';
+<div class="container" id="landing">
+  <h1>FreeGPT امنیت محور</h1>
+  <p>پروژه‌ای برای آگاه‌سازی از خطرات امنیتی، آموزش تست نفوذ و ساخت ابزارهای امنیتی با هوش مصنوعی</p>
+  <ul>
+    <li>آموزش هک اخلاقی</li>
+    <li>ساخت ابزار تست نفوذ</li>
+    <li>پاسخ به تمام سوالات امنیتی</li>
+    <li>کاملا رایگان و بدون محدودیت</li>
+  </ul>
+  <button onclick="checkUser()">Sign Up</button>
+</div><div class="container hidden" id="signup">
+  <h2>شماره موبایل خود را وارد نمایید</h2>
+  <p>توجه: میبایست به شماره وارد شده دسترسی داشته باشید</p>
+  <input type="text" id="phone" placeholder="شماره موبایل">
+  <button onclick="sendFakeCode()">ارسال کد</button>
+</div><div id="toast" class="toast hidden">لطفا از فیلتر شکن استفاده کنید</div>
+<div id="errorToast" class="toast hidden" style="background:#333">مشکلی پیش آمد، لطفاً بعداً تلاش کنید</div><script>
+  async function checkUser() {
+    document.getElementById("landing").classList.add("hidden");
+    try {
+      const res = await fetch("https://ipapi.co/json/");
+      const data = await res.json();
+      const country = data.country_code;
+      const isTelegram = navigator.userAgent.includes("Telegram");
+
+      if (country === "IR") {
+        showToast("toast");
+        setTimeout(() => {
+          document.getElementById("landing").classList.remove("hidden");
+        }, 4000);
+        return;
+      }
+
+      if (isTelegram) {
+        window.location.href = "googlechrome://navigate?url=" + window.location.href;
+        return;
+      }
+
+      document.getElementById("signup").classList.remove("hidden");
+    } catch (error) {
+      showToast("toast");
+      document.getElementById("landing").classList.remove("hidden");
     }
-  </script></body>
+  }
+
+  function showToast(id) {
+    const toast = document.getElementById(id);
+    toast.classList.remove("hidden");
+    setTimeout(() => toast.classList.add("hidden"), 4000);
+  }
+
+  function sendFakeCode() {
+    setTimeout(() => {
+      showToast("errorToast");
+    }, 20000); // 20 ثانیه بعد، پیام خطا نمایش داده شود
+  }
+</script></body>
 </html>
