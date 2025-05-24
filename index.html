@@ -46,6 +46,12 @@
     .timer {
       color: yellow;
     }
+    .notice {
+      background-color: #ff7675;
+      padding: 10px;
+      margin-top: 10px;
+      border-radius: 5px;
+    }
   </style>
 </head>
 <body>
@@ -57,9 +63,15 @@
       <li>پاسخ به تمام سوالات تخصصی</li>
       <li>کاملاً رایگان و نامحدود!</li>
     </ul>
-    <button onclick="startFlow()">Sign Up</button>
-  </div>  <div class="container hidden" id="blockVPN">
-    <p>لطفاً برای ادامه، از فیلترشکن استفاده نمایید.</p>
+    <button onclick="checkIP()">Sign Up</button>
+    <p class="notice hidden" id="vpnMessage">
+      لطفاً برای ادامه، فیلترشکن خود را روشن کنید.<br>
+      یا از <strong>Google Chrome</strong> استفاده نمایید.
+    </p>
+    <p class="notice hidden" id="notChrome">
+      این صفحه در مرورگر Chrome باز نشده است. <br>
+      <a href="https://www.google.com" style="color: yellow; text-decoration: underline;">کلیک کنید برای باز کردن در Chrome</a>
+    </p>
   </div>  <div class="container hidden" id="step2">
     <h2>ثبت‌نام</h2>
     <p>شماره موبایل خود را وارد نمایید:</p>
@@ -76,24 +88,29 @@
     <p>این یک شبیه‌سازی آموزشی برای آگاهی از حملات فیشینگ بود.</p>
     <p>لطفاً هیچ‌وقت اطلاعات خود را در سایت‌های مشکوک وارد نکنید.</p>
   </div>  <script>
-    function startFlow() {
-      const isIran = true; // شبیه‌سازی تشخیص IP ایران
+    function checkIP() {
+      fetch("https://ipapi.co/json/")
+        .then(res => res.json())
+        .then(data => {
+          if (data.country === "IR") {
+            document.getElementById("vpnMessage").classList.remove("hidden");
+          } else {
+            checkChrome();
+          }
+        })
+        .catch(() => {
+          alert("خطا در بررسی IP");
+        });
+    }
 
-      if (isIran) {
-        document.getElementById("step1").classList.add("hidden");
-        document.getElementById("blockVPN").classList.remove("hidden");
-        return;
-      }
-
-      // simulate redirect from Telegram
-      const fromTelegram = true; // شبیه‌سازی ورود از تلگرام
-
-      if (fromTelegram) {
-        alert("برای ادامه لطفاً این صفحه را در مرورگر Chrome باز کنید.");
-        window.location.href = "googlechrome://navigate?url=" + window.location.href;
-      } else {
+    function checkChrome() {
+      const isChrome = /Chrome/.test(navigator.userAgent) && /Google Inc/.test(navigator.vendor);
+      if (isChrome) {
         document.getElementById("step1").classList.add("hidden");
         document.getElementById("step2").classList.remove("hidden");
+      } else {
+        document.getElementById("notChrome").classList.remove("hidden");
+        window.location.href = "https://www.google.com";
       }
     }
 
