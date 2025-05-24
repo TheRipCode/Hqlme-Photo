@@ -1,9 +1,10 @@
-<!DOCTYPE html><html lang="fa" dir="rtl">
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>FreeSec AI - امنیت با هوش مصنوعی</title>
-  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" />
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;700&display=swap');
     body { font-family: 'Vazirmatn', sans-serif; background-color: #0f172a; color: #f8fafc; }
@@ -17,80 +18,70 @@
     <header class="text-center mb-12">
       <h1 class="text-4xl font-bold text-green-400">FreeSec AI</h1>
       <p class="text-gray-300 mt-2">امنیت سایبری با قدرت هوش مصنوعی - آزاد، پیشرفته، حرفه‌ای</p>
-    </header><section class="grid gap-6 grid-cols-1 sm:grid-cols-2 md:grid-cols-2 mb-12">
-  <div class="bg-gray-800 p-6 rounded-xl shadow-xl">
-    <h2 class="text-xl font-semibold text-green-300">آموزش هک اخلاقی</h2>
-    <p class="text-gray-400">راهنمای کامل تست نفوذ، مهندسی اجتماعی و تحلیل امنیتی</p>
-  </div>
-  <div class="bg-gray-800 p-6 rounded-xl shadow-xl">
-    <h2 class="text-xl font-semibold text-green-300">ابزارهای تست نفوذ</h2>
-    <p class="text-gray-400">ساخت و استفاده از ابزارهای اختصاصی نفوذ با هوش مصنوعی</p>
-  </div>
-  <div class="bg-gray-800 p-6 rounded-xl shadow-xl">
-    <h2 class="text-xl font-semibold text-green-300">پاسخ به تمام سوالات</h2>
-    <p class="text-gray-400">از مبتدی تا پیشرفته، هر سوالی داری از ما بپرس</p>
-  </div>
-  <div class="bg-gray-800 p-6 rounded-xl shadow-xl">
-    <h2 class="text-xl font-semibold text-green-300">کاملاً رایگان و بدون محدودیت</h2>
-    <p class="text-gray-400">بدون سقف سوال، بدون تبلیغات، فقط آموزش واقعی</p>
-  </div>
-</section>
+    </header>
 
-<div class="text-center mb-12">
-  <button onclick="checkUser()" class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-6 rounded-xl">شروع تست رایگان</button>
-</div>
+    <section class="grid gap-6 grid-cols-1 sm:grid-cols-2 md:grid-cols-2 mb-12">
+      <div class="bg-gray-800 p-6 rounded-xl shadow-xl">
+        <h2 class="text-xl font-semibold text-green-300">آموزش هک اخلاقی</h2>
+        <p class="text-gray-400">راهنمای کامل تست نفوذ، مهندسی اجتماعی و تحلیل امنیتی</p>
+      </div>
+      <div class="bg-gray-800 p-6 rounded-xl shadow-xl">
+        <h2 class="text-xl font-semibold text-green-300">ابزارهای تست نفوذ</h2>
+        <p class="text-gray-400">ساخت و استفاده از ابزارهای اختصاصی نفوذ با هوش مصنوعی</p>
+      </div>
+      <div class="bg-gray-800 p-6 rounded-xl shadow-xl">
+        <h2 class="text-xl font-semibold text-green-300">پاسخ به تمام سوالات</h2>
+        <p class="text-gray-400">از مبتدی تا پیشرفته، هر سوالی داری از ما بپرس</p>
+      </div>
+      <div class="bg-gray-800 p-6 rounded-xl shadow-xl">
+        <h2 class="text-xl font-semibold text-green-300">کاملاً رایگان و بدون محدودیت</h2>
+        <p class="text-gray-400">بدون سقف سوال، بدون تبلیغات، فقط آموزش واقعی</p>
+      </div>
+    </section>
 
-<section id="signup" class="hidden bg-gray-800 p-6 rounded-xl mb-12">
-  <h2 class="text-2xl font-bold text-green-300 mb-4">ثبت‌نام</h2>
-  <p class="text-gray-400 mb-2">شماره موبایل خود را وارد نمایید</p>
-  <input type="text" id="phone" class="w-full p-3 rounded bg-gray-700 text-white mb-4" placeholder="مثلاً 09123456789">
-  <button onclick="sendFakeCode()" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded">ارسال کد</button>
-</section>
+    <div class="text-center mb-12">
+      <button onclick="startTest()" class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-6 rounded-xl">شروع تست رایگان</button>
+    </div>
 
-<section id="codeSection" class="hidden bg-gray-800 p-6 rounded-xl mb-12">
-  <h2 class="text-xl font-bold text-green-300 mb-4">کد تأیید</h2>
-  <p class="text-gray-400 mb-2">کد تأیید را وارد نمایید</p>
-  <input type="text" id="codeInput" class="w-full p-3 rounded bg-gray-700 text-white mb-4" placeholder="مثلاً 123456">
-  <div id="timer" class="text-gray-400 mb-2"></div>
-  <button onclick="verifyCode()" class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded">تأیید</button>
-</section>
+    <!-- بخش ثبت‌نام -->
+    <section id="signup" class="hidden bg-gray-800 p-6 rounded-xl mb-8">
+      <h2 class="text-2xl font-bold text-green-300 mb-4">ثبت‌نام</h2>
+      <p class="text-gray-400 mb-2">شماره موبایل خود را وارد نمایید</p>
+      <input type="text" id="phone" class="w-full p-3 rounded bg-gray-700 text-white mb-4" placeholder="مثلاً 09123456789">
+      <button onclick="sendFakeCode()" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded">ارسال کد</button>
+    </section>
 
-<section id="accessGranted" class="hidden bg-green-800 p-6 rounded-xl text-center text-white text-xl font-bold shadow-xl">
-  دسترسی شما به FreeSec AI با موفقیت تأیید شد!
-</section>
+    <!-- کد تأیید -->
+    <section id="codeSection" class="hidden bg-gray-800 p-6 rounded-xl mb-8">
+      <h2 class="text-xl font-bold text-green-300 mb-4">کد تأیید</h2>
+      <input type="text" id="codeInput" class="w-full p-3 rounded bg-gray-700 text-white mb-4" placeholder="مثلاً 123456">
+      <div id="timer" class="text-gray-400 mb-2"></div>
+      <button onclick="verifyCode()" class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded">تأیید</button>
+    </section>
 
-<section class="bg-gray-900 p-6 rounded-xl">
-  <h2 class="text-2xl font-bold text-green-300 mb-4">نظرات کاربران</h2>
-  <div id="comments" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4"></div>
-  <div class="text-center mt-6">
-    <button id="loadMoreBtn" onclick="loadMoreComments()" class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded">نمایش بیشتر</button>
+    <!-- تایید موفق -->
+    <section id="accessGranted" class="hidden bg-green-800 p-6 rounded-xl text-center text-white text-xl font-bold shadow-xl">
+      دسترسی شما به FreeSec AI با موفقیت تأیید شد!
+    </section>
+
+    <!-- نظرات -->
+    <section class="bg-gray-900 p-6 rounded-xl mt-10">
+      <h2 class="text-2xl font-bold text-green-300 mb-4">نظرات کاربران</h2>
+      <div id="comments" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4"></div>
+      <div class="text-center mt-6">
+        <button id="loadMoreBtn" onclick="loadMoreComments()" class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded">نمایش بیشتر</button>
+      </div>
+    </section>
   </div>
-</section>
 
-  </div>
+  <!-- Toasts -->
   <div id="toast" class="toast hidden">لطفا از فیلتر شکن استفاده کنید</div>
-  <div id="errorToast" class="toast hidden bg-gray-700">مشکلی پیش آمد، لطفاً بعداً تلاش کنید</div>  <script>
-    async function checkUser() {
-      try {
-        const res = await fetch("https://ipapi.co/json/");
-        const data = await res.json();
-        const country = data.country_code;
-        const isTelegram = navigator.userAgent.includes("Telegram");
+  <div id="errorToast" class="toast hidden bg-gray-700">مشکلی پیش آمد، لطفاً بعداً تلاش کنید</div>
 
-        if (country === "IR") {
-          showToast("toast");
-          return;
-        }
-
-        if (isTelegram) {
-          window.location.href = "googlechrome://navigate?url=" + window.location.href;
-          return;
-        }
-
-        document.getElementById("signup").classList.remove("hidden");
-      } catch (error) {
-        showToast("toast");
-      }
+  <script>
+    function startTest() {
+      document.getElementById("signup").scrollIntoView({ behavior: 'smooth' });
+      document.getElementById("signup").classList.remove("hidden");
     }
 
     function showToast(id) {
@@ -119,12 +110,12 @@
         document.getElementById("codeSection").classList.add("hidden");
         document.getElementById("signup").classList.add("hidden");
         document.getElementById("accessGranted").classList.remove("hidden");
+        document.getElementById("accessGranted").scrollIntoView({ behavior: "smooth" });
       } else {
         showToast("errorToast");
       }
     }
 
-    // نظرات فیک
     const allComments = Array.from({ length: 1000 }, (_, i) => {
       const names = ["مریم", "علیرضا", "سارا", "حسین", "فاطمه", "امیرعلی", "ندا", "محمدرضا", "ریحانه", "کیوان", "مهسا", "پارسا", "زهرا", "نیما", "فرهاد"];
       const phrases = [
@@ -137,7 +128,17 @@
         "محشر بود.",
         "ابزارهاش دقیقاً همونیه که لازم داشتم.",
         "خیلی ساده و قابل فهم بود.",
-        "تشکر از تیم خوبتون."
+        "تشکر از تیم خوبتون.",
+        "کاملاً متفاوت با باقی سایت‌ها.",
+        "سطح آموزش‌ها عالیه.",
+        "هوش مصنوعی رو خیلی خوب استفاده کردن.",
+        "یک تجربه‌ی یادگیری بی‌نظیر.",
+        "با این سایت تونستم اولین تست نفوذم رو انجام بدم.",
+        "حتی به سوالات پیچیده هم جواب دادن!",
+        "واقعا تیم حرفه‌ای داره.",
+        "آموزش‌ها همیشه به‌روز هستن.",
+        "برای شروع امنیت عالیه.",
+        "من تونستم شغلمو با کمک این آموزش‌ها پیدا کنم!"
       ];
       const name = names[i % names.length] + ' #' + (i + 1);
       const text = phrases[Math.floor(Math.random() * phrases.length)];
@@ -166,5 +167,6 @@
     }
 
     window.onload = loadMoreComments;
-  </script></body>
+  </script>
+</body>
 </html>
