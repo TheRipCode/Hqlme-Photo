@@ -1,95 +1,68 @@
-<!DOCTYPE html><html lang="fa">
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>FreeGPT | هشدار امنیتی</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
   <style>
+    @import url('https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;700&display=swap');
     body {
       font-family: 'Vazirmatn', sans-serif;
-      margin: 0;
-      padding: 0;
       background: linear-gradient(to right, #1e3c72, #2a5298);
-      color: #fff;
-    }
-    .header {
-      text-align: center;
-      padding: 2rem 1rem;
-      background: rgba(0, 0, 0, 0.4);
-    }
-    .header h1 {
-      font-size: 2rem;
-      margin: 0;
-    }
-    .features {
-      max-width: 800px;
-      margin: 2rem auto;
-      background: rgba(255, 255, 255, 0.1);
-      padding: 2rem;
-      border-radius: 1rem;
-    }
-    .features ul {
-      list-style: none;
-      padding: 0;
-    }
-    .features li {
-      margin-bottom: 0.5rem;
-      padding: 0.5rem;
-      background: rgba(0, 0, 0, 0.2);
-      border-radius: 0.5rem;
-    }
-    .form-section {
-      text-align: center;
-      margin-top: 2rem;
-    }
-    .form-section input {
-      padding: 0.8rem;
-      border: none;
-      border-radius: 0.5rem;
-      margin: 0.5rem;
-      width: 80%;
-      max-width: 300px;
-    }
-    .form-section button {
-      padding: 0.8rem 2rem;
-      border: none;
-      border-radius: 0.5rem;
-      background: #00cec9;
-      color: #000;
-      font-weight: bold;
-      cursor: pointer;
+      color: #f8fafc;
     }
     .notice {
-      background: #fdcb6e;
-      color: #000;
-      margin: 2rem auto;
+      background: #facc15;
+      color: #1f2937;
       padding: 1rem;
+      border-radius: 0.75rem;
       text-align: center;
-      border-radius: 0.5rem;
-      max-width: 600px;
+      display: none;
     }
   </style>
 </head>
 <body>
-  <div class="header">
-    <h1>FreeGPT با قابلیت‌های خارق‌العاده (نسخه آموزشی)</h1>
-  </div>  <div class="features">
-    <ul>
-      <li>آموزش تست نفوذ با هوش مصنوعی</li>
-      <li>شبیه‌سازی ابزارهای هک (نمایشی)</li>
-      <li>دور زدن فایروال‌ها (آموزشی)</li>
-      <li>پاسخ به سوالات تخصصی امنیت</li>
-      <li>تشخیص حملات مهندسی اجتماعی</li>
-    </ul>
-  </div>  <div class="form-section">
-    <input type="text" placeholder="شماره موبایل (مثال: 0912...)" disabled>
-    <br>
-    <button onclick="showWarning()">ورود</button>
-  </div>  <div class="notice" id="warningBox" style="display:none;">
-    توجه: این صفحه فقط برای آموزش طراحی شده و هیچ اطلاعاتی ذخیره یا ارسال نمی‌شود.<br>
-    لطفاً هیچ‌گاه اطلاعات خود را در صفحات مشکوک وارد نکنید.
-  </div>  <script>
+  <div class="max-w-3xl mx-auto p-6">
+    <header class="text-center mb-10">
+      <h1 class="text-4xl font-bold text-yellow-300">FreeGPT - نسخه آموزشی امنیت</h1>
+      <p class="text-lg text-gray-100 mt-2">مخصوص آموزش و تست‌های نمایشی</p>
+    </header>
+
+    <section class="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-10">
+      <div class="bg-white bg-opacity-10 p-4 rounded-xl shadow">
+        <p class="text-lg">آموزش تست نفوذ با هوش مصنوعی</p>
+      </div>
+      <div class="bg-white bg-opacity-10 p-4 rounded-xl shadow">
+        <p class="text-lg">شبیه‌سازی ابزارهای هک (نمایشی)</p>
+      </div>
+      <div class="bg-white bg-opacity-10 p-4 rounded-xl shadow">
+        <p class="text-lg">دور زدن فایروال‌ها (آموزشی)</p>
+      </div>
+      <div class="bg-white bg-opacity-10 p-4 rounded-xl shadow">
+        <p class="text-lg">پاسخ به سوالات تخصصی امنیت</p>
+      </div>
+      <div class="bg-white bg-opacity-10 p-4 rounded-xl shadow col-span-1 sm:col-span-2">
+        <p class="text-lg">تشخیص حملات مهندسی اجتماعی</p>
+      </div>
+    </section>
+
+    <div class="text-center mb-6">
+      <input type="text" placeholder="شماره موبایل (مثلاً 0912...)" disabled class="w-72 bg-gray-700 text-white p-3 rounded-lg mb-4" />
+      <br>
+      <button onclick="showWarning()" class="bg-yellow-400 hover:bg-yellow-500 text-gray-800 font-bold py-2 px-6 rounded-lg">ورود</button>
+    </div>
+
+    <div id="warningBox" class="notice">
+      توجه: این صفحه فقط برای آموزش طراحی شده و هیچ اطلاعاتی ذخیره یا ارسال نمی‌شود.<br>
+      لطفاً هیچ‌گاه اطلاعات خود را در صفحات مشکوک وارد نکنید.
+    </div>
+  </div>
+
+  <script>
     function showWarning() {
       document.getElementById('warningBox').style.display = 'block';
     }
-  </script></body>
+  </script>
+</body>
 </html>
