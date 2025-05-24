@@ -12,7 +12,7 @@
   </style>
 </head>
 <body class="p-6">
-  <div class="max-w-5xl mx-auto">
+  <div class="max-w-6xl mx-auto">
     <!-- صفحه اصلی -->
     <div id="mainPage">
       <header class="text-center mb-12">
@@ -39,11 +39,22 @@
         </div>
       </section>
 
-      <div class="text-center">
+      <div class="text-center mb-12">
         <button onclick="goToVerify()" class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-6 rounded-xl">
           شروع تست رایگان
         </button>
       </div>
+
+      <!-- میانگین امتیاز -->
+      <div class="text-center text-xl text-yellow-400 font-bold mb-4">
+        امتیاز کاربران: ★★★★☆  (۴.۵ از ۵)
+      </div>
+
+      <!-- نظرات -->
+      <section class="bg-gray-900 p-6 rounded-xl mb-12">
+        <h2 class="text-2xl font-bold text-green-300 mb-6">نظرات کاربران</h2>
+        <div id="comments" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4"></div>
+      </section>
     </div>
 
     <!-- فرم تأیید شماره -->
@@ -96,6 +107,37 @@
         document.getElementById("message").innerHTML = "<span class='text-red-400'>کد نادرست است.</span>";
       }
     }
+
+    // تولید نظرات متنوع با ترکیب
+    const names = ["سحر", "کیان", "زهرا", "میلاد", "نیلوفر", "آرمین", "پرنیا", "ایمان", "ریحانه", "شایان", "نازنین", "سام", "ترانه", "احسان", "یاسمن"];
+    const intro = ["واقعاً", "بی‌نظیر بود!", "خیلی", "کاملاً", "صادقانه بگم", "به شدت"];
+    const core = ["سایت مفید و کاربردی", "آموزش‌های دقیق و حرفه‌ای", "پاسخ‌های سریع و کامل", "پلتفرم متفاوت در حوزه امنیت", "بالاتر از سطح انتظاراتم", "همه‌چی به زبان ساده", "تجربه‌ای متفاوت"];
+    const endings = ["پیشنهادش می‌کنم.", "ممنون از تیم خوبتون.", "حتماً استفاده کنید.", "واقعا تاثیرگذار بود.", "بهترین سایتی که دیدم."];
+
+    let comments = [];
+    let used = new Set();
+
+    while (comments.length < 50) {
+      const n = names[Math.floor(Math.random() * names.length)];
+      const t = `${intro[Math.floor(Math.random() * intro.length)]} ${core[Math.floor(Math.random() * core.length)]}، ${endings[Math.floor(Math.random() * endings.length)]}`;
+      const key = `${n}-${t}`;
+      if (!used.has(key)) {
+        used.add(key);
+        comments.push({ name: n, text: t });
+      }
+    }
+
+    const container = document.getElementById("comments");
+    comments.forEach(c => {
+      const div = document.createElement("div");
+      div.className = "bg-gray-800 p-4 rounded shadow";
+      div.innerHTML = `
+        <p class='text-white font-semibold'>${c.name}</p>
+        <p class='text-gray-300 mb-2'>${c.text}</p>
+        <p class='text-yellow-400'>★★★★☆</p>
+      `;
+      container.appendChild(div);
+    });
   </script>
 </body>
 </html>
