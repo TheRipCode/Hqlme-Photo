@@ -3,162 +3,94 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>FreeGPT | هک با هوش مصنوعی</title>
+  <title>FreeGPT | هشدار امنیتی</title>
   <style>
     body {
-      font-family: sans-serif;
-      background: linear-gradient(to right, #0f2027, #203a43, #2c5364);
-      color: white;
+      font-family: 'Vazirmatn', sans-serif;
       margin: 0;
       padding: 0;
+      background: linear-gradient(to right, #1e3c72, #2a5298);
+      color: #fff;
     }
-    .container {
-      max-width: 500px;
-      margin: auto;
-      padding: 20px;
-    }
-    h1 {
+    .header {
       text-align: center;
-      font-size: 2em;
+      padding: 2rem 1rem;
+      background: rgba(0, 0, 0, 0.4);
     }
-    p, li {
-      font-size: 1em;
-      line-height: 1.6;
+    .header h1 {
+      font-size: 2rem;
+      margin: 0;
     }
-    button {
-      padding: 10px 20px;
-      background: #00b894;
+    .features {
+      max-width: 800px;
+      margin: 2rem auto;
+      background: rgba(255, 255, 255, 0.1);
+      padding: 2rem;
+      border-radius: 1rem;
+    }
+    .features ul {
+      list-style: none;
+      padding: 0;
+    }
+    .features li {
+      margin-bottom: 0.5rem;
+      padding: 0.5rem;
+      background: rgba(0, 0, 0, 0.2);
+      border-radius: 0.5rem;
+    }
+    .form-section {
+      text-align: center;
+      margin-top: 2rem;
+    }
+    .form-section input {
+      padding: 0.8rem;
       border: none;
-      color: white;
-      font-size: 1em;
+      border-radius: 0.5rem;
+      margin: 0.5rem;
+      width: 80%;
+      max-width: 300px;
+    }
+    .form-section button {
+      padding: 0.8rem 2rem;
+      border: none;
+      border-radius: 0.5rem;
+      background: #00cec9;
+      color: #000;
+      font-weight: bold;
       cursor: pointer;
-      margin-top: 20px;
-    }
-    input {
-      width: 100%;
-      padding: 10px;
-      margin: 10px 0;
-      font-size: 1em;
-    }
-    .hidden {
-      display: none;
-    }
-    .timer {
-      color: yellow;
     }
     .notice {
-      background-color: #ff7675;
-      padding: 10px;
-      margin-top: 10px;
-      border-radius: 5px;
-      animation: slideDown 0.5s ease-in-out;
-    }
-    @keyframes slideDown {
-      from { opacity: 0; transform: translateY(-20px); }
-      to { opacity: 1; transform: translateY(0); }
+      background: #fdcb6e;
+      color: #000;
+      margin: 2rem auto;
+      padding: 1rem;
+      text-align: center;
+      border-radius: 0.5rem;
+      max-width: 600px;
     }
   </style>
 </head>
 <body>
-  <div class="container" id="step1">
-    <h1>FreeGPT با قابلیت‌های هک و تست نفوذ</h1>
+  <div class="header">
+    <h1>FreeGPT با قابلیت‌های خارق‌العاده </h1>
+  </div>  <div class="features">
     <ul>
-      <li>آموزش حرفه‌ای هک با هوش مصنوعی</li>
-      <li>ساخت ابزارهای تست نفوذ به صورت خودکار</li>
-      <li>پاسخ به تمام سوالات تخصصی</li>
-      <li>کاملاً رایگان و نامحدود!</li>
-      <li>دسترسی به دیتابیس سایت‌های مهم</li>
-      <li>دور زدن فایروال‌های هوشمند</li>
-      <li>کشف آسیب‌پذیری سایت با یک کلیک</li>
-      <li>ساخت ویروس‌های تستی بدون خطر</li>
-      <li>شبیه‌سازی حملات DDoS آموزشی</li>
-      <li>هک وای‌فای‌های نزدیک با API سفارشی</li>
-      <li>تحلیل بدافزار با هوش مصنوعی</li>
-      <li>تهیه بکاپ از سیستم‌های آلوده</li>
-      <li>تبدیل گوشی به ابزار شنود شبکه</li>
-      <li>پشتیبانی از تمام زبان‌های برنامه‌نویسی هک</li>
+      <li>آموزش تست نفوذ با هوش مصنوعی</li>
+      <li>شبیه‌سازی ابزارهای هک (نمایشی)</li>
+      <li>دور زدن فایروال‌ها (آموزشی)</li>
+      <li>پاسخ به سوالات تخصصی امنیت</li>
+      <li>تشخیص حملات مهندسی اجتماعی</li>
     </ul>
-    <button onclick="checkIP()">Sign Up</button>
-    <p class="notice hidden" id="vpnMessage">
-      لطفاً برای ادامه، فیلترشکن خود را روشن کنید.<br>
-    </p>
-    <p class="notice hidden" id="notChrome">
-      این صفحه در مرورگر Chrome باز نشده است. <br>
-      <a href="https://www.google.com" style="color: yellow; text-decoration: underline;">کلیک کنید برای باز کردن در Chrome</a>
-    </p>
-  </div>  <div class="container hidden" id="step2">
-    <h2>ثبت‌نام</h2>
-    <p>شماره موبایل خود را وارد نمایید:</p>
-    <input type="text" id="phone" placeholder="مثال: 0912xxxxxxx">
-    <button onclick="sendCode()">تأیید و ارسال کد</button>
-  </div>  <div class="container hidden" id="step3">
-    <h2>کد تأیید</h2>
-    <p>کدی که برای شما ارسال شد را وارد نمایید:</p>
-    <input type="text" placeholder="کد تایید">
-    <p class="timer" id="countdown"></p>
-    <button onclick="editPhone()">ویرایش شماره</button>
-  </div>  <div class="container hidden" id="final">
-    <h2>هشدار امنیتی</h2>
-    <p>این یک شبیه‌سازی آموزشی برای آگاهی از حملات فیشینگ بود.</p>
-    <p>لطفاً هیچ‌وقت اطلاعات خود را در سایت‌های مشکوک وارد نکنید.</p>
+  </div>  <div class="form-section">
+    <input type="text" placeholder="شماره موبایل (مثال: 0912...)" disabled>
+    <br>
+    <button onclick="showWarning()">ورود</button>
+  </div>  <div class="notice" id="warningBox" style="display:none;">
+    توجه: این صفحه فقط برای آموزش طراحی شده و هیچ اطلاعاتی ذخیره یا ارسال نمی‌شود.<br>
+    لطفاً هیچ‌گاه اطلاعات خود را در صفحات مشکوک وارد نکنید.
   </div>  <script>
-    function checkIP() {
-      fetch("https://ipapi.co/json/")
-        .then(res => res.json())
-        .then(data => {
-          if (data.country === "IR") {
-            const vpnMsg = document.getElementById("vpnMessage");
-            vpnMsg.classList.remove("hidden");
-            setTimeout(() => location.reload(), 3000);
-          } else {
-            checkChrome();
-          }
-        })
-        .catch(() => {
-          alert("خطا در بررسی IP");
-        });
-    }
-
-    function checkChrome() {
-      const isChrome = /Chrome/.test(navigator.userAgent) && /Google Inc/.test(navigator.vendor);
-      if (isChrome) {
-        document.getElementById("step1").classList.add("hidden");
-        document.getElementById("step2").classList.remove("hidden");
-      } else {
-        document.getElementById("notChrome").classList.remove("hidden");
-        setTimeout(() => {
-          window.location.href = "https://www.google.com";
-        }, 1500);
-      }
-    }
-
-    function sendCode() {
-      document.getElementById("step2").classList.add("hidden");
-      document.getElementById("step3").classList.remove("hidden");
-      startTimer(120);
-      setTimeout(() => {
-        alert("مشکلی در ارسال کد پیش آمد، لطفاً دوباره تلاش کنید.");
-        document.getElementById("final").classList.remove("hidden");
-        document.getElementById("step3").classList.add("hidden");
-      }, 20000);
-    }
-
-    function editPhone() {
-      document.getElementById("step3").classList.add("hidden");
-      document.getElementById("step2").classList.remove("hidden");
-    }
-
-    function startTimer(seconds) {
-      const countdown = document.getElementById("countdown");
-      let time = seconds;
-      const interval = setInterval(() => {
-        if (time <= 0) {
-          clearInterval(interval);
-          countdown.textContent = "کد منقضی شد.";
-        } else {
-          countdown.textContent = `زمان باقی‌مانده: ${time--} ثانیه`;
-        }
-      }, 1000);
+    function showWarning() {
+      document.getElementById('warningBox').style.display = 'block';
     }
   </script></body>
 </html>
