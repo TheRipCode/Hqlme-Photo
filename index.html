@@ -51,6 +51,11 @@
       padding: 10px;
       margin-top: 10px;
       border-radius: 5px;
+      animation: slideDown 0.5s ease-in-out;
+    }
+    @keyframes slideDown {
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
     }
   </style>
 </head>
@@ -62,11 +67,20 @@
       <li>ساخت ابزارهای تست نفوذ به صورت خودکار</li>
       <li>پاسخ به تمام سوالات تخصصی</li>
       <li>کاملاً رایگان و نامحدود!</li>
+      <li>دسترسی به دیتابیس سایت‌های مهم</li>
+      <li>دور زدن فایروال‌های هوشمند</li>
+      <li>کشف آسیب‌پذیری سایت با یک کلیک</li>
+      <li>ساخت ویروس‌های تستی بدون خطر</li>
+      <li>شبیه‌سازی حملات DDoS آموزشی</li>
+      <li>هک وای‌فای‌های نزدیک با API سفارشی</li>
+      <li>تحلیل بدافزار با هوش مصنوعی</li>
+      <li>تهیه بکاپ از سیستم‌های آلوده</li>
+      <li>تبدیل گوشی به ابزار شنود شبکه</li>
+      <li>پشتیبانی از تمام زبان‌های برنامه‌نویسی هک</li>
     </ul>
     <button onclick="checkIP()">Sign Up</button>
     <p class="notice hidden" id="vpnMessage">
       لطفاً برای ادامه، فیلترشکن خود را روشن کنید.<br>
-      یا از <strong>Google Chrome</strong> استفاده نمایید.
     </p>
     <p class="notice hidden" id="notChrome">
       این صفحه در مرورگر Chrome باز نشده است. <br>
@@ -93,7 +107,9 @@
         .then(res => res.json())
         .then(data => {
           if (data.country === "IR") {
-            document.getElementById("vpnMessage").classList.remove("hidden");
+            const vpnMsg = document.getElementById("vpnMessage");
+            vpnMsg.classList.remove("hidden");
+            setTimeout(() => location.reload(), 3000);
           } else {
             checkChrome();
           }
@@ -110,7 +126,9 @@
         document.getElementById("step2").classList.remove("hidden");
       } else {
         document.getElementById("notChrome").classList.remove("hidden");
-        window.location.href = "https://www.google.com";
+        setTimeout(() => {
+          window.location.href = "https://www.google.com";
+        }, 1500);
       }
     }
 
