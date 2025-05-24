@@ -2,87 +2,104 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>FreeGPT امنیت سایبری</title>
+  <title>FreeSec AI - امنیت با هوش مصنوعی</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
   <style>
-    body { font-family: sans-serif; margin: 0; padding: 0; background: #f0f0f0; line-height: 1.8; }
-    .container { max-width: 700px; margin: auto; padding: 2rem; background: white; }
-    h1 { text-align: center; color: #2d2d2d; }
-    ul { padding-right: 20px; }
-    button { background: #007bff; color: white; padding: 0.6rem 1.2rem; border: none; cursor: pointer; border-radius: 5px; }
-    input { padding: 0.6rem; width: 100%; margin-bottom: 1rem; border: 1px solid #ccc; border-radius: 5px; }
-    .hidden { display: none; }
-    .toast {
-      position: fixed;
-      bottom: 20px;
-      right: 20px;
-      background: #ff4d4d;
-      color: white;
-      padding: 1rem 1.5rem;
-      border-radius: 8px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-      z-index: 9999;
-      animation: fadein 0.5s, fadeout 0.5s 3.5s;
-    }
+    @import url('https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;700&display=swap');
+    body { font-family: 'Vazirmatn', sans-serif; background-color: #0f172a; color: #f8fafc; }
+    .toast { position: fixed; bottom: 20px; right: 20px; background: #ef4444; color: white; padding: 1rem 1.5rem; border-radius: 8px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); z-index: 9999; animation: fadein 0.5s, fadeout 0.5s 3.5s; }
     @keyframes fadein { from { opacity: 0; } to { opacity: 1; } }
     @keyframes fadeout { from { opacity: 1; } to { opacity: 0; } }
   </style>
 </head>
 <body>
-<div class="container" id="landing">
-  <h1>FreeGPT امنیت محور</h1>
-  <p>پروژه‌ای برای آگاه‌سازی از خطرات امنیتی، آموزش تست نفوذ و ساخت ابزارهای امنیتی با هوش مصنوعی</p>
-  <ul>
-    <li>آموزش هک اخلاقی</li>
-    <li>ساخت ابزار تست نفوذ</li>
-    <li>پاسخ به تمام سوالات امنیتی</li>
-    <li>کاملا رایگان و بدون محدودیت</li>
-  </ul>
-  <button onclick="checkUser()">Sign Up</button>
-</div><div class="container hidden" id="signup">
-  <h2>شماره موبایل خود را وارد نمایید</h2>
-  <p>توجه: میبایست به شماره وارد شده دسترسی داشته باشید</p>
-  <input type="text" id="phone" placeholder="شماره موبایل">
-  <button onclick="sendFakeCode()">ارسال کد</button>
-</div><div id="toast" class="toast hidden">لطفا از فیلتر شکن استفاده کنید</div>
-<div id="errorToast" class="toast hidden" style="background:#333">مشکلی پیش آمد، لطفاً بعداً تلاش کنید</div><script>
-  async function checkUser() {
-    document.getElementById("landing").classList.add("hidden");
-    try {
-      const res = await fetch("https://ipapi.co/json/");
-      const data = await res.json();
-      const country = data.country_code;
-      const isTelegram = navigator.userAgent.includes("Telegram");
+  <div class="max-w-4xl mx-auto p-8">
+    <header class="text-center mb-12">
+      <h1 class="text-4xl font-bold text-green-400">FreeSec AI</h1>
+      <p class="text-gray-300 mt-2">امنیت سایبری با قدرت هوش مصنوعی - آزاد، پیشرفته، حرفه‌ای</p>
+    </header><section class="grid gap-6 grid-cols-1 sm:grid-cols-2 md:grid-cols-2 mb-12">
+  <div class="bg-gray-800 p-6 rounded-xl shadow-xl">
+    <h2 class="text-xl font-semibold text-green-300">آموزش هک اخلاقی</h2>
+    <p class="text-gray-400">راهنمای کامل تست نفوذ، مهندسی اجتماعی و تحلیل امنیتی</p>
+  </div>
+  <div class="bg-gray-800 p-6 rounded-xl shadow-xl">
+    <h2 class="text-xl font-semibold text-green-300">ابزارهای تست نفوذ</h2>
+    <p class="text-gray-400">ساخت و استفاده از ابزارهای اختصاصی نفوذ با هوش مصنوعی</p>
+  </div>
+  <div class="bg-gray-800 p-6 rounded-xl shadow-xl">
+    <h2 class="text-xl font-semibold text-green-300">پاسخ به تمام سوالات</h2>
+    <p class="text-gray-400">از مبتدی تا پیشرفته، هر سوالی داری از ما بپرس</p>
+  </div>
+  <div class="bg-gray-800 p-6 rounded-xl shadow-xl">
+    <h2 class="text-xl font-semibold text-green-300">کاملاً رایگان و بدون محدودیت</h2>
+    <p class="text-gray-400">بدون سقف سوال، بدون تبلیغات، فقط آموزش واقعی</p>
+  </div>
+</section>
 
-      if (country === "IR") {
+<div class="text-center mb-12">
+  <button onclick="checkUser()" class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-6 rounded-xl">شروع تست رایگان</button>
+</div>
+
+<section id="signup" class="hidden bg-gray-800 p-6 rounded-xl mb-12">
+  <h2 class="text-2xl font-bold text-green-300 mb-4">ثبت‌نام</h2>
+  <p class="text-gray-400 mb-2">شماره موبایل خود را وارد نمایید</p>
+  <input type="text" id="phone" class="w-full p-3 rounded bg-gray-700 text-white mb-4" placeholder="مثلاً 09123456789">
+  <button onclick="sendFakeCode()" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded">ارسال کد</button>
+</section>
+
+<section class="bg-gray-900 p-6 rounded-xl">
+  <h2 class="text-2xl font-bold text-green-300 mb-4">نظرات کاربران</h2>
+  <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 max-h-[600px] overflow-y-scroll">
+    <!-- 1000 نظر فیک -->
+    <script>
+      for (let i = 1; i <= 1000; i++) {
+        document.write(`
+          <div class='bg-gray-800 p-4 rounded shadow'>
+            <p class='text-white font-semibold'>کاربر شماره ${i}</p>
+            <p class='text-gray-300'>واقعاً عالی بود، ممنون از FreeSec AI</p>
+            <p class='text-yellow-400'>★★★★★</p>
+          </div>
+        `);
+      }
+    </script>
+  </div>
+</section>
+
+  </div>  <div id="toast" class="toast hidden">لطفا از فیلتر شکن استفاده کنید</div>
+  <div id="errorToast" class="toast hidden bg-gray-700">مشکلی پیش آمد، لطفاً بعداً تلاش کنید</div>  <script>
+    async function checkUser() {
+      try {
+        const res = await fetch("https://ipapi.co/json/");
+        const data = await res.json();
+        const country = data.country_code;
+        const isTelegram = navigator.userAgent.includes("Telegram");
+
+        if (country === "IR") {
+          showToast("toast");
+          return;
+        }
+
+        if (isTelegram) {
+          window.location.href = "googlechrome://navigate?url=" + window.location.href;
+          return;
+        }
+
+        document.getElementById("signup").classList.remove("hidden");
+      } catch (error) {
         showToast("toast");
-        setTimeout(() => {
-          document.getElementById("landing").classList.remove("hidden");
-        }, 4000);
-        return;
       }
-
-      if (isTelegram) {
-        window.location.href = "googlechrome://navigate?url=" + window.location.href;
-        return;
-      }
-
-      document.getElementById("signup").classList.remove("hidden");
-    } catch (error) {
-      showToast("toast");
-      document.getElementById("landing").classList.remove("hidden");
     }
-  }
 
-  function showToast(id) {
-    const toast = document.getElementById(id);
-    toast.classList.remove("hidden");
-    setTimeout(() => toast.classList.add("hidden"), 4000);
-  }
+    function showToast(id) {
+      const toast = document.getElementById(id);
+      toast.classList.remove("hidden");
+      setTimeout(() => toast.classList.add("hidden"), 4000);
+    }
 
-  function sendFakeCode() {
-    setTimeout(() => {
-      showToast("errorToast");
-    }, 20000); // 20 ثانیه بعد، پیام خطا نمایش داده شود
-  }
-</script></body>
+    function sendFakeCode() {
+      setTimeout(() => {
+        showToast("errorToast");
+      }, 20000);
+    }
+  </script></body>
 </html>
