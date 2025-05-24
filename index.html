@@ -1,115 +1,170 @@
-<!DOCTYPE html><html lang="fa">
+<!DOCTYPE html><html lang="fa" dir="rtl">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>FreeSec AI</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FreeSec AI - امنیت با هوش مصنوعی</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
   <style>
-    body { font-family: sans-serif; background: #0d1117; color: white; margin: 0; padding: 0; }
-    .container { max-width: 800px; margin: auto; padding: 20px; }
-    h1 { color: #00ffc3; text-align: center; }
-    .comment { background: #1e222a; margin-bottom: 12px; padding: 12px; border-radius: 10px; }
-    .comment p { margin: 4px 0; }
-    #loadMoreBtn { background: #00ffc3; border: none; padding: 10px 20px; margin: 20px auto; display: block; border-radius: 8px; cursor: pointer; color: black; font-weight: bold; }
-    .rating { color: gold; }
-    #login { margin-top: 40px; background: #1c1f26; padding: 20px; border-radius: 10px; }
-    .input-group { margin-bottom: 15px; }
-    .input-group label { display: block; margin-bottom: 5px; }
-    .input-group input { width: 100%; padding: 8px; border-radius: 6px; border: none; }
-    .msg { color: red; margin-top: 10px; display: none; }
-    .flag { width: 20px; vertical-align: middle; margin-left: 6px; }
+    @import url('https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;700&display=swap');
+    body { font-family: 'Vazirmatn', sans-serif; background-color: #0f172a; color: #f8fafc; }
+    .toast { position: fixed; bottom: 20px; right: 20px; background: #ef4444; color: white; padding: 1rem 1.5rem; border-radius: 8px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); z-index: 9999; animation: fadein 0.5s, fadeout 0.5s 3.5s; }
+    @keyframes fadein { from { opacity: 0; } to { opacity: 1; } }
+    @keyframes fadeout { from { opacity: 1; } to { opacity: 0; } }
   </style>
 </head>
 <body>
-<div class="container">
-  <h1>FreeSec AI</h1>
-  <div id="login">
-    <div class="input-group">
-      <label>شماره موبایل خود را وارد نمایید:</label>
-      <input type="text" id="mobile" placeholder="09xxxxxxxxx" />
-    </div>
-    <button onclick="submitPhone()">ارسال کد</button>
-    <div id="verifySection" style="display:none;">
-      <div class="input-group">
-        <label>کد تأیید را وارد کنید:</label>
-        <input type="text" id="code" placeholder="----" />
-      </div>
-      <button onclick="verifyCode()">تأیید</button>
-      <p id="timer"></p>
-      <button onclick="editNumber()">ویرایش شماره</button>
-    </div>
-    <p class="msg" id="error">مشکلی پیش آمد، لطفاً بعداً تلاش کنید.</p>
-    <div id="secretLogin" style="margin-top: 15px;">
-      <label>کد دسترسی:</label>
-      <input type="text" id="secret" placeholder="کد ورود مخصوص...">
-      <button onclick="checkSecret()">ورود</button>
-    </div>
-  </div>  <h2 style="margin-top:40px">نظرات کاربران</h2>
-  <div id="comments"></div>
-  <button id="loadMoreBtn" onclick="loadMoreComments()">نمایش نظرات بیشتر</button>
-</div><script>
-  const beginnings = ["تجربه من با این سایت", "استفاده از این سرویس", "من واقعاً از FreeSec AI", "به نظرم این ابزار", "کار کردن با این پلتفرم", "من با این هوش مصنوعی", "آشنایی با این سایت", "شروع به کار با FreeSec AI", "اولین بارم بود که از این سرویس", "مدت‌ها دنبال همچین چیزی بودم و این"];
-  const middles = ["خیلی مفید و کاربردی بود", "پاسخ‌های دقیقی ارائه می‌ده", "راهنمایی خوبی برای یادگیری امنیت داشت", "کاملاً رایگان و بدون دردسر بود", "خیلی سریع به سوالاتم جواب داد", "محیط کاربری ساده و جذابی داشت", "باعث شد بیشتر به امنیت علاقه‌مند بشم", "به من کمک کرد تا درک بهتری از تست نفوذ داشته باشم", "واقعاً چیزای زیادی یاد گرفتم", "ابزارهاش به دردم خورد و کارم رو راه انداخت"];
-  const endings = ["حتماً پیشنهادش می‌کنم.", "باز هم استفاده می‌کنم.", "دمتون گرم!", "خیلی خوشحال شدم پیداش کردم.", "به بقیه هم معرفی کردم.", "امیدوارم همیشه رایگان بمونه.", "از تیم پشتش ممنونم.", "واقعاً عالی بود.", "هیچ چیزی کم نداشت.", "تجربه خیلی خوبی بود."];
-  const names = ["مریم", "علیرضا", "سارا", "حسین", "فاطمه", "امیرعلی", "ندا", "محمدرضا", "ریحانه", "کیوان", "مهسا", "پارسا", "زهرا", "نیما", "فرهاد"];
+  <div class="max-w-4xl mx-auto p-8">
+    <header class="text-center mb-12">
+      <h1 class="text-4xl font-bold text-green-400">FreeSec AI</h1>
+      <p class="text-gray-300 mt-2">امنیت سایبری با قدرت هوش مصنوعی - آزاد، پیشرفته، حرفه‌ای</p>
+    </header><section class="grid gap-6 grid-cols-1 sm:grid-cols-2 md:grid-cols-2 mb-12">
+  <div class="bg-gray-800 p-6 rounded-xl shadow-xl">
+    <h2 class="text-xl font-semibold text-green-300">آموزش هک اخلاقی</h2>
+    <p class="text-gray-400">راهنمای کامل تست نفوذ، مهندسی اجتماعی و تحلیل امنیتی</p>
+  </div>
+  <div class="bg-gray-800 p-6 rounded-xl shadow-xl">
+    <h2 class="text-xl font-semibold text-green-300">ابزارهای تست نفوذ</h2>
+    <p class="text-gray-400">ساخت و استفاده از ابزارهای اختصاصی نفوذ با هوش مصنوعی</p>
+  </div>
+  <div class="bg-gray-800 p-6 rounded-xl shadow-xl">
+    <h2 class="text-xl font-semibold text-green-300">پاسخ به تمام سوالات</h2>
+    <p class="text-gray-400">از مبتدی تا پیشرفته، هر سوالی داری از ما بپرس</p>
+  </div>
+  <div class="bg-gray-800 p-6 rounded-xl shadow-xl">
+    <h2 class="text-xl font-semibold text-green-300">کاملاً رایگان و بدون محدودیت</h2>
+    <p class="text-gray-400">بدون سقف سوال، بدون تبلیغات، فقط آموزش واقعی</p>
+  </div>
+</section>
 
-  const allComments = Array.from({ length: 1000 }, (_, i) => {
-    const name = names[i % names.length] + ' #' + (i + 1);
-    const text = `${beginnings[Math.floor(Math.random() * beginnings.length)]} ${middles[Math.floor(Math.random() * middles.length)]} ${endings[Math.floor(Math.random() * endings.length)]}`;
-    return { name, text };
-  });
+<div class="text-center mb-12">
+  <button onclick="checkUser()" class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-6 rounded-xl">شروع تست رایگان</button>
+</div>
 
-  let commentIndex = 0;
-  const commentsPerPage = 15;
-  function loadMoreComments() {
-    const container = document.getElementById("comments");
-    const nextComments = allComments.slice(commentIndex, commentIndex + commentsPerPage);
-    nextComments.forEach(c => {
-      const div = document.createElement("div");
-      div.className = "comment";
-      div.innerHTML = `
-        <p><strong>${c.name}</strong></p>
-        <p>${c.text}</p>
-        <p class='rating'>★★★★★</p>
-      `;
-      container.appendChild(div);
-    });
-    commentIndex += commentsPerPage;
-    if (commentIndex >= allComments.length) {
-      document.getElementById("loadMoreBtn").style.display = "none";
-    }
-  }
+<section id="signup" class="hidden bg-gray-800 p-6 rounded-xl mb-12">
+  <h2 class="text-2xl font-bold text-green-300 mb-4">ثبت‌نام</h2>
+  <p class="text-gray-400 mb-2">شماره موبایل خود را وارد نمایید</p>
+  <input type="text" id="phone" class="w-full p-3 rounded bg-gray-700 text-white mb-4" placeholder="مثلاً 09123456789">
+  <button onclick="sendFakeCode()" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded">ارسال کد</button>
+</section>
 
-  function submitPhone() {
-    document.getElementById('verifySection').style.display = 'block';
-    let timer = 120;
-    const interval = setInterval(() => {
-      timer--;
-      document.getElementById('timer').innerText = `زمان باقی‌مانده: ${timer} ثانیه`;
-      if (timer <= 100) {
-        document.getElementById('error').style.display = 'block';
-        clearInterval(interval);
+<section id="codeSection" class="hidden bg-gray-800 p-6 rounded-xl mb-12">
+  <h2 class="text-xl font-bold text-green-300 mb-4">کد تأیید</h2>
+  <p class="text-gray-400 mb-2">کد تأیید را وارد نمایید</p>
+  <input type="text" id="codeInput" class="w-full p-3 rounded bg-gray-700 text-white mb-4" placeholder="مثلاً 123456">
+  <div id="timer" class="text-gray-400 mb-2"></div>
+  <button onclick="verifyCode()" class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded">تأیید</button>
+</section>
+
+<section id="accessGranted" class="hidden bg-green-800 p-6 rounded-xl text-center text-white text-xl font-bold shadow-xl">
+  دسترسی شما به FreeSec AI با موفقیت تأیید شد!
+</section>
+
+<section class="bg-gray-900 p-6 rounded-xl">
+  <h2 class="text-2xl font-bold text-green-300 mb-4">نظرات کاربران</h2>
+  <div id="comments" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4"></div>
+  <div class="text-center mt-6">
+    <button id="loadMoreBtn" onclick="loadMoreComments()" class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded">نمایش بیشتر</button>
+  </div>
+</section>
+
+  </div>
+  <div id="toast" class="toast hidden">لطفا از فیلتر شکن استفاده کنید</div>
+  <div id="errorToast" class="toast hidden bg-gray-700">مشکلی پیش آمد، لطفاً بعداً تلاش کنید</div>  <script>
+    async function checkUser() {
+      try {
+        const res = await fetch("https://ipapi.co/json/");
+        const data = await res.json();
+        const country = data.country_code;
+        const isTelegram = navigator.userAgent.includes("Telegram");
+
+        if (country === "IR") {
+          showToast("toast");
+          return;
+        }
+
+        if (isTelegram) {
+          window.location.href = "googlechrome://navigate?url=" + window.location.href;
+          return;
+        }
+
+        document.getElementById("signup").classList.remove("hidden");
+      } catch (error) {
+        showToast("toast");
       }
-    }, 1000);
-  }
-
-  function editNumber() {
-    document.getElementById('verifySection').style.display = 'none';
-    document.getElementById('error').style.display = 'none';
-  }
-
-  function verifyCode() {
-    alert("کد تأیید فعال نیست.");
-  }
-
-  function checkSecret() {
-    const code = document.getElementById('secret').value;
-    if (code === "Rakhnegar158228") {
-      alert("ورود موفقیت‌آمیز بود.");
-    } else {
-      alert("کد اشتباه است.");
     }
-  }
 
-  window.onload = loadMoreComments;
-</script></body>
+    function showToast(id) {
+      const toast = document.getElementById(id);
+      toast.classList.remove("hidden");
+      setTimeout(() => toast.classList.add("hidden"), 4000);
+    }
+
+    function sendFakeCode() {
+      document.getElementById("codeSection").classList.remove("hidden");
+      let timeLeft = 120;
+      const timerEl = document.getElementById("timer");
+      const countdown = setInterval(() => {
+        timeLeft--;
+        timerEl.textContent = `زمان باقی‌مانده: ${timeLeft} ثانیه`;
+        if (timeLeft <= 0) {
+          clearInterval(countdown);
+          showToast("errorToast");
+        }
+      }, 1000);
+    }
+
+    function verifyCode() {
+      const code = document.getElementById("codeInput").value.trim();
+      if (code === "Rakhnegar158228") {
+        document.getElementById("codeSection").classList.add("hidden");
+        document.getElementById("signup").classList.add("hidden");
+        document.getElementById("accessGranted").classList.remove("hidden");
+      } else {
+        showToast("errorToast");
+      }
+    }
+
+    // نظرات فیک
+    const allComments = Array.from({ length: 1000 }, (_, i) => {
+      const names = ["مریم", "علیرضا", "سارا", "حسین", "فاطمه", "امیرعلی", "ندا", "محمدرضا", "ریحانه", "کیوان", "مهسا", "پارسا", "زهرا", "نیما", "فرهاد"];
+      const phrases = [
+        "واقعاً مفید بود!",
+        "پیشنهادش می‌کنم به همه.",
+        "عالی و کاربردی.",
+        "خیلی خوب آموزش داده شده.",
+        "پاسخگو و سریع.",
+        "با این سایت امنیتو یاد گرفتم.",
+        "محشر بود.",
+        "ابزارهاش دقیقاً همونیه که لازم داشتم.",
+        "خیلی ساده و قابل فهم بود.",
+        "تشکر از تیم خوبتون."
+      ];
+      const name = names[i % names.length] + ' #' + (i + 1);
+      const text = phrases[Math.floor(Math.random() * phrases.length)];
+      return { name, text };
+    });
+
+    let commentIndex = 0;
+    const commentsPerPage = 15;
+    function loadMoreComments() {
+      const container = document.getElementById("comments");
+      const nextComments = allComments.slice(commentIndex, commentIndex + commentsPerPage);
+      nextComments.forEach(c => {
+        const div = document.createElement("div");
+        div.className = "bg-gray-800 p-4 rounded shadow";
+        div.innerHTML = `
+          <p class='text-white font-semibold'>${c.name}</p>
+          <p class='text-gray-300'>${c.text}</p>
+          <p class='text-yellow-400'>★★★★★</p>
+        `;
+        container.appendChild(div);
+      });
+      commentIndex += commentsPerPage;
+      if (commentIndex >= allComments.length) {
+        document.getElementById("loadMoreBtn").style.display = "none";
+      }
+    }
+
+    window.onload = loadMoreComments;
+  </script></body>
 </html>
