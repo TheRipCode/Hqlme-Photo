@@ -1,4 +1,5 @@
-<!DOCTYPE html><html lang="fa" dir="rtl">
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
@@ -17,70 +18,73 @@
       <header class="text-center mb-12">
         <h1 class="text-4xl font-bold text-green-400">FreeSec AI</h1>
         <p class="text-gray-300 mt-2">امنیت سایبری با قدرت هوش مصنوعی - آزاد، پیشرفته، حرفه‌ای</p>
-      </header><section class="grid gap-6 grid-cols-1 sm:grid-cols-2 md:grid-cols-2 mb-12">
-    <div class="bg-gray-800 p-6 rounded-xl shadow-xl">
-      <h2 class="text-xl font-semibold text-green-300">آموزش هک اخلاقی</h2>
-      <p class="text-gray-400">راهنمای کامل تست نفوذ، مهندسی اجتماعی و تحلیل امنیتی</p>
-    </div>
-    <div class="bg-gray-800 p-6 rounded-xl shadow-xl">
-      <h2 class="text-xl font-semibold text-green-300">ابزارهای تست نفوذ</h2>
-      <p class="text-gray-400">ساخت ابزارهای اختصاصی نفوذ با هوش مصنوعی</p>
-    </div>
-    <div class="bg-gray-800 p-6 rounded-xl shadow-xl">
-      <h2 class="text-xl font-semibold text-green-300">پاسخ به تمام سوالات</h2>
-      <p class="text-gray-400">از مبتدی تا پیشرفته، هر سوالی داری از ما بپرس</p>
-    </div>
-    <div class="bg-gray-800 p-6 rounded-xl shadow-xl">
-      <h2 class="text-xl font-semibold text-green-300">کاملاً رایگان و بدون محدودیت</h2>
-      <p class="text-gray-400">بدون سقف سوال، بدون تبلیغات، فقط آموزش واقعی</p>
-    </div>
-  </section>
+      </header>
 
-  <div class="text-center mb-12">
-    <button onclick="goToVerify()" class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-6 rounded-xl">
-      شروع تست رایگان
-    </button>
+      <section class="grid gap-6 grid-cols-1 sm:grid-cols-2 md:grid-cols-2 mb-12">
+        <div class="bg-gray-800 p-6 rounded-xl shadow-xl">
+          <h2 class="text-xl font-semibold text-green-300">آموزش هک اخلاقی</h2>
+          <p class="text-gray-400">راهنمای کامل تست نفوذ، مهندسی اجتماعی و تحلیل امنیتی</p>
+        </div>
+        <div class="bg-gray-800 p-6 rounded-xl shadow-xl">
+          <h2 class="text-xl font-semibold text-green-300">ابزارهای تست نفوذ</h2>
+          <p class="text-gray-400">ساخت ابزارهای اختصاصی نفوذ با هوش مصنوعی</p>
+        </div>
+        <div class="bg-gray-800 p-6 rounded-xl shadow-xl">
+          <h2 class="text-xl font-semibold text-green-300">پاسخ به تمام سوالات</h2>
+          <p class="text-gray-400">از مبتدی تا پیشرفته، هر سوالی داری از ما بپرس</p>
+        </div>
+        <div class="bg-gray-800 p-6 rounded-xl shadow-xl">
+          <h2 class="text-xl font-semibold text-green-300">کاملاً رایگان و بدون محدودیت</h2>
+          <p class="text-gray-400">بدون سقف سوال، بدون تبلیغات، فقط آموزش واقعی</p>
+        </div>
+      </section>
+
+      <div class="text-center mb-12">
+        <button onclick="goToVerify()" class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-6 rounded-xl">
+          شروع تست رایگان
+        </button>
+      </div>
+
+      <div class="text-center text-xl text-yellow-400 font-bold mb-4">
+        امتیاز کاربران: ★★★★☆  (۴.۵ از ۵)
+      </div>
+
+      <section class="bg-gray-900 p-6 rounded-xl mb-12">
+        <h2 class="text-2xl font-bold text-green-300 mb-6">نظرات کاربران</h2>
+        <div id="comments" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4"></div>
+      </section>
+    </div>
+
+    <!-- فرم تأیید شماره -->
+    <div id="verifyPage" class="hidden max-w-md mx-auto mt-12 bg-gray-800 p-8 rounded-xl shadow-xl">
+      <h2 class="text-2xl font-bold text-green-300 mb-4 text-center">تأیید شماره موبایل</h2>
+
+      <label class="block text-gray-400 mb-1">شماره موبایل:</label>
+      <input id="phone" class="w-full p-3 rounded bg-gray-700 text-white mb-4" placeholder="مثلاً 09123456789" />
+
+      <button onclick="sendCode()" class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded w-full mb-4">
+        ارسال کد تأیید
+      </button>
+
+      <div id="codeSection" class="hidden">
+        <label class="block text-gray-400 mb-1">کد تأیید:</label>
+        <input id="code" class="w-full p-3 rounded bg-gray-700 text-white mb-2" placeholder="مثلاً 123456" />
+
+        <button onclick="verify()" class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded w-full mb-2">
+          تأیید و ورود
+        </button>
+
+        <div id="timer" class="text-gray-400 text-sm mb-2"></div>
+        <div class="text-center">
+          <button onclick="editPhone()" class="text-blue-400 text-sm underline">ویرایش شماره موبایل</button>
+        </div>
+      </div>
+
+      <div id="message" class="mt-4 text-center font-bold"></div>
+    </div>
   </div>
 
-  <div class="text-center text-xl text-yellow-400 font-bold mb-4">
-    امتیاز کاربران: ★★★★☆  (۴.۵ از ۵)
-  </div>
-
-  <section class="bg-gray-900 p-6 rounded-xl mb-12">
-    <h2 class="text-2xl font-bold text-green-300 mb-6">نظرات کاربران</h2>
-    <div id="comments" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4"></div>
-  </section>
-</div>
-
-<!-- فرم تأیید شماره -->
-<div id="verifyPage" class="hidden max-w-md mx-auto mt-12 bg-gray-800 p-8 rounded-xl shadow-xl">
-  <h2 class="text-2xl font-bold text-green-300 mb-4 text-center">تأیید شماره موبایل</h2>
-
-  <label class="block text-gray-400 mb-1">شماره موبایل:</label>
-  <input id="phone" class="w-full p-3 rounded bg-gray-700 text-white mb-4" placeholder="مثلاً 09123456789" />
-
-  <button onclick="sendCode()" class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded w-full mb-4">
-    ارسال کد تأیید
-  </button>
-
-  <div id="codeSection" class="hidden">
-    <label class="block text-gray-400 mb-1">کد تأیید:</label>
-    <input id="code" class="w-full p-3 rounded bg-gray-700 text-white mb-2" placeholder="مثلاً 123456" />
-
-    <button onclick="verify()" class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded w-full mb-2">
-      تأیید و ورود
-    </button>
-
-    <div id="timer" class="text-gray-400 text-sm mb-2"></div>
-    <div class="text-center">
-      <button onclick="editPhone()" class="text-blue-400 text-sm underline">ویرایش شماره موبایل</button>
-    </div>
-  </div>
-
-  <div id="message" class="mt-4 text-center font-bold"></div>
-</div>
-
-  </div>  <script>
+  <script>
     function goToVerify() {
       document.getElementById("mainPage").classList.add("hidden");
       document.getElementById("verifyPage").classList.remove("hidden");
@@ -92,6 +96,7 @@
         alert("لطفاً شماره موبایل معتبر وارد کنید.");
         return;
       }
+      document.getElementById("phone").disabled = true; // غیرفعال کردن شماره
       document.getElementById("codeSection").classList.remove("hidden");
       document.getElementById("message").innerHTML = "";
       startTimer();
@@ -101,6 +106,7 @@
     }
 
     function editPhone() {
+      document.getElementById("phone").disabled = false; // فعال کردن شماره
       document.getElementById("codeSection").classList.add("hidden");
       document.getElementById("message").innerHTML = "";
       document.getElementById("phone").focus();
@@ -132,6 +138,7 @@
       }
     }
 
+    // ساخت نظرات کاربران
     const names = ["سحر", "کیان", "زهرا", "میلاد", "نیلوفر", "آرمین", "پرنیا", "ایمان", "ریحانه", "شایان", "نازنین", "سام", "ترانه", "احسان", "یاسمن"];
     const intro = ["واقعاً", "بی‌نظیر بود!", "خیلی", "کاملاً", "صادقانه بگم", "به شدت"];
     const core = ["سایت مفید و کاربردی", "آموزش‌های دقیق و حرفه‌ای", "پاسخ‌های سریع و کامل", "پلتفرم متفاوت در حوزه امنیت", "بالاتر از سطح انتظاراتم", "همه‌چی به زبان ساده", "تجربه‌ای متفاوت"];
@@ -161,5 +168,6 @@
       `;
       container.appendChild(div);
     });
-  </script></body>
+  </script>
+</body>
 </html>
