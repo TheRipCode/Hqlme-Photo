@@ -116,18 +116,9 @@
 
   <script>
     async function goToVerify() {
-      // بررسی مرورگر
-      const ua = navigator.userAgent.toLowerCase();
-      const isChrome = ua.includes("chrome") && !ua.includes("edg") && !ua.includes("opr") && !ua.includes("brave");
-      if (!isChrome) {
-        alert("لطفاً با مرورگر Google Chrome وارد شوید.");
-        window.location.href = "https://www.google.com/chrome/";
-        return;
-      }
-
-      // بررسی IP
       try {
-        const res = await fetch("https://ipapi.co/json/");
+        // تشخیص کشور کاربر از طریق API ساده و قابل دسترس
+        const res = await fetch("https://api.country.is");
         const data = await res.json();
         if (data.country === "IR") {
           const warn = document.getElementById("ipWarning");
