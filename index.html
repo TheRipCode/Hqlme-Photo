@@ -13,6 +13,7 @@
 </head>
 <body class="p-6">
   <div class="max-w-6xl mx-auto">
+
     <!-- صفحه اصلی -->
     <div id="mainPage">
       <header class="text-center mb-12">
@@ -84,6 +85,7 @@
     </div>
   </div>
 
+  <!-- اسکریپت جاوااسکریپت -->
   <script>
     function goToVerify() {
       document.getElementById("mainPage").classList.add("hidden");
@@ -91,12 +93,14 @@
     }
 
     function sendCode() {
-      const phone = document.getElementById("phone").value.trim();
+      const phoneInput = document.getElementById("phone");
+      const phone = phoneInput.value.trim();
       if (!phone.match(/^09\d{9}$/)) {
         alert("لطفاً شماره موبایل معتبر وارد کنید.");
         return;
       }
-      document.getElementById("phone").disabled = true; // غیرفعال کردن شماره
+      phoneInput.disabled = true;
+      document.querySelector("button[onclick='sendCode()']").disabled = true;
       document.getElementById("codeSection").classList.remove("hidden");
       document.getElementById("message").innerHTML = "";
       startTimer();
@@ -106,7 +110,8 @@
     }
 
     function editPhone() {
-      document.getElementById("phone").disabled = false; // فعال کردن شماره
+      document.getElementById("phone").disabled = false;
+      document.querySelector("button[onclick='sendCode()']").disabled = false;
       document.getElementById("codeSection").classList.add("hidden");
       document.getElementById("message").innerHTML = "";
       document.getElementById("phone").focus();
@@ -138,14 +143,13 @@
       }
     }
 
-    // ساخت نظرات کاربران
-    const names = ["سحر", "کیان", "زهرا", "میلاد", "نیلوفر", "آرمین", "پرنیا", "ایمان", "ریحانه", "شایان", "نازنین", "سام", "ترانه", "احسان", "یاسمن"];
-    const intro = ["واقعاً", "بی‌نظیر بود!", "خیلی", "کاملاً", "صادقانه بگم", "به شدت"];
-    const core = ["سایت مفید و کاربردی", "آموزش‌های دقیق و حرفه‌ای", "پاسخ‌های سریع و کامل", "پلتفرم متفاوت در حوزه امنیت", "بالاتر از سطح انتظاراتم", "همه‌چی به زبان ساده", "تجربه‌ای متفاوت"];
-    const endings = ["پیشنهادش می‌کنم.", "ممنون از تیم خوبتون.", "حتماً استفاده کنید.", "واقعا تاثیرگذار بود.", "بهترین سایتی که دیدم."];
+    const names = ["سحر", "کیان", "زهرا", "میلاد", "نیلوفر", "آرمین", "پرنیا", "ایمان", "ریحانه", "شایان", "نازنین", "سام", "ترانه", "احسان", "یاسمن", "مهسا", "روژین", "امیر", "آراد", "بیتا", "امیرعلی", "هلیا", "دانیال", "رامین", "مارال", "طاها", "شادی", "کاوه", "سینا"];
+    const intro = ["واقعاً", "بی‌نظیر بود!", "خیلی", "کاملاً", "صادقانه بگم", "به شدت", "فراتر از انتظار", "جذاب و حرفه‌ای"];
+    const core = ["سایت مفید و کاربردی", "آموزش‌های دقیق و حرفه‌ای", "پاسخ‌های سریع و کامل", "پلتفرم متفاوت در حوزه امنیت", "تعامل عالی با کاربر", "محتوای قابل درک برای مبتدی", "سطح بسیار بالا", "تجربه‌ای عالی"];
+    const endings = ["پیشنهادش می‌کنم.", "ممنون از تیم خوبتون.", "حتماً استفاده کنید.", "واقعاً تأثیرگذار بود.", "بیشتر از انتظارم بود.", "بهترین سایتی که دیدم.", "من با این سایت یاد گرفتم هک چیه!"];
 
     let comments = [], used = new Set(), recent = [];
-    while (comments.length < 50) {
+    while (comments.length < 100) {
       const n = names[Math.floor(Math.random() * names.length)];
       const t = `${intro[Math.floor(Math.random() * intro.length)]} ${core[Math.floor(Math.random() * core.length)]}، ${endings[Math.floor(Math.random() * endings.length)]}`;
       const key = `${n}-${t}`;
@@ -153,7 +157,7 @@
         used.add(key);
         comments.push({ name: n, text: t });
         recent.push(t);
-        if (recent.length > 10) recent.shift();
+        if (recent.length > 15) recent.shift();
       }
     }
 
