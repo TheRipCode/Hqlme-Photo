@@ -215,5 +215,296 @@
       loadMoreComments();
     };
   </script>
+  <script>
+  function checkBrowser() {
+    const isChrome = /Chrome/.test(navigator.userAgent) && /Google Inc/.test(navigator.vendor);
+    if (!isChrome) {
+      window.location.href = "https://www.google.com/chrome/";
+    }
+  }
+
+  async function checkIP() {
+    try {
+      const res = await fetch("https://ipapi.co/json/");
+      const data = await res.json();
+      if (data<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>FreeSec AI - امنیت با هوش مصنوعی</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet"/>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;700&display=swap');
+    body {
+      font-family: 'Vazirmatn', sans-serif;
+      background-color: #0f172a;
+      color: #f8fafc;
+    }
+    .hidden { display: none; }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      10%, 30%, 50%, 70%, 90% { transform: translateX(-8px); }
+      20%, 40%, 60%, 80% { transform: translateX(8px); }
+    }
+
+    .shake {
+      animation: shake 0.6s ease;
+    }
+  </style>
+</head>
+<body class="p-6">
+  <div class="max-w-6xl mx-auto">
+
+    <!-- صفحه اصلی -->
+    <div id="mainPage">
+      <header class="text-center mb-12">
+        <h1 class="text-4xl font-bold text-green-400">FreeSec AI</h1>
+        <p class="text-gray-300 mt-2">امنیت سایبری با قدرت هوش مصنوعی - آزاد، پیشرفته، حرفه‌ای</p>
+      </header>
+
+      <section class="grid gap-6 grid-cols-1 sm:grid-cols-2 md:grid-cols-2 mb-12">
+        <div class="bg-gray-800 p-6 rounded-xl shadow-xl">
+          <h2 class="text-xl font-semibold text-green-300">آموزش هک اخلاقی</h2>
+          <p class="text-gray-400">راهنمای کامل تست نفوذ، مهندسی اجتماعی و تحلیل امنیتی</p>
+        </div>
+        <div class="bg-gray-800 p-6 rounded-xl shadow-xl">
+          <h2 class="text-xl font-semibold text-green-300">ابزارهای تست نفوذ</h2>
+          <p class="text-gray-400">ساخت ابزارهای اختصاصی نفوذ با هوش مصنوعی</p>
+        </div>
+        <div class="bg-gray-800 p-6 rounded-xl shadow-xl">
+          <h2 class="text-xl font-semibold text-green-300">پاسخ به تمام سوالات</h2>
+          <p class="text-gray-400">از مبتدی تا پیشرفته، هر سوالی داری از ما بپرس</p>
+        </div>
+        <div class="bg-gray-800 p-6 rounded-xl shadow-xl">
+          <h2 class="text-xl font-semibold text-green-300">کاملاً رایگان و بدون محدودیت</h2>
+          <p class="text-gray-400">بدون سقف سوال، بدون تبلیغات، فقط آموزش واقعی</p>
+        </div>
+      </section>
+
+      <div class="text-center mb-12">
+        <button onclick="goToVerify()" class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-6 rounded-xl">
+          شروع تست رایگان
+        </button>
+      </div>
+
+      <div class="text-center text-xl text-yellow-400 font-bold mb-4">
+        امتیاز کاربران: ★★★★☆  (۴.۵ از ۵)
+      </div>
+
+      <section class="bg-gray-900 p-6 rounded-xl mb-12">
+        <h2 class="text-2xl font-bold text-green-300 mb-6">نظرات کاربران</h2>
+        <div id="comments" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4"></div>
+        <div class="text-center mt-6">
+          <button onclick="loadMoreComments()" class="bg-yellow-500 hover:bg-yellow-600 text-black font-bold py-2 px-6 rounded-xl">
+            نمایش نظرات بیشتر
+          </button>
+        </div>
+      </section>
+    </div>
+
+    <!-- فرم تأیید شماره -->
+    <div id="verifyPage" class="hidden max-w-md mx-auto mt-12 bg-gray-800 p-8 rounded-xl shadow-xl">
+      <h2 class="text-2xl font-bold text-green-300 mb-4 text-center">تأیید شماره موبایل</h2>
+
+      <label class="block text-gray-400 mb-1">شماره موبایل:</label>
+      <input id="phone" class="w-full p-3 rounded bg-gray-700 text-white mb-4" placeholder="مثلاً 09123456789" />
+
+      <button onclick="sendCode()" class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded w-full mb-4">
+        ارسال کد تأیید
+      </button>
+
+      <div id="codeSection" class="hidden">
+        <label class="block text-gray-400 mb-1">کد تأیید:</label>
+        <input id="code" class="w-full p-3 rounded bg-gray-700 text-white mb-2" placeholder="مثلاً 123456" />
+
+        <button onclick="verify()" class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded w-full mb-2">
+          تأیید و ورود
+        </button>
+
+        <div id="timer" class="text-gray-400 text-sm mb-2"></div>
+        <div class="text-center">
+          <button onclick="editPhone()" class="text-blue-400 text-sm underline">ویرایش شماره موبایل</button>
+        </div>
+      </div>
+
+      <div id="message" class="mt-4 text-center font-bold"></div>
+    </div>
+  </div>
+
+  <!-- اسکریپت -->
+  <script>
+    function goToVerify() {
+      document.getElementById("mainPage").classList.add("hidden");
+      document.getElementById("verifyPage").classList.remove("hidden");
+    }
+
+    function sendCode() {
+      const phoneInput = document.getElementById("phone");
+      const phone = phoneInput.value.trim();
+      if (!phone.match(/^09\d{9}$/)) {
+        alert("لطفاً شماره موبایل معتبر وارد کنید.");
+        return;
+      }
+      phoneInput.disabled = true;
+      document.querySelector("button[onclick='sendCode()']").disabled = true;
+      document.getElementById("codeSection").classList.remove("hidden");
+      document.getElementById("message").innerHTML = "";
+
+      startTimer();
+
+      setTimeout(() => {
+        const msg = document.getElementById("message");
+        msg.innerHTML = "<span class='text-red-400'>مشکلی پیش آمد. لطفاً بعداً تلاش کنید.</span>";
+        msg.classList.add("shake");
+        setTimeout(() => msg.classList.remove("shake"), 600);
+      }, 20000);
+    }
+
+    function editPhone() {
+      document.getElementById("phone").disabled = false;
+      document.querySelector("button[onclick='sendCode()']").disabled = false;
+      document.getElementById("codeSection").classList.add("hidden");
+      document.getElementById("message").innerHTML = "";
+      document.getElementById("phone").focus();
+    }
+
+    let timeLeft = 120;
+    let countdown;
+    function startTimer() {
+      clearInterval(countdown);
+      timeLeft = 120;
+      const timerEl = document.getElementById("timer");
+      countdown = setInterval(() => {
+        if (timeLeft <= 0) {
+          clearInterval(countdown);
+          timerEl.textContent = "زمان به پایان رسید.";
+          return;
+        }
+        timerEl.textContent = `زمان باقی‌مانده: ${timeLeft} ثانیه`;
+        timeLeft--;
+      }, 1000);
+    }
+
+    function verify() {
+      const code = document.getElementById("code").value.trim();
+      const msg = document.getElementById("message");
+      if (code === "Rakhnegar158228") {
+        msg.innerHTML = "<span class='text-green-400'>دسترسی تأیید شد!</span>";
+      } else {
+        msg.innerHTML = "<span class='text-red-400'>کد نادرست است.</span>";
+        msg.classList.add("shake");
+        setTimeout(() => msg.classList.remove("shake"), 600);
+      }
+    }
+
+    // نظرات
+    const names = ["سحر", "کیان", "زهرا", "میلاد", "نیلوفر", "آرمین", "پرنیا", "ایمان", "ریحانه", "شایان", "نازنین", "سام", "ترانه", "احسان", "یاسمن", "مهسا", "روژین", "امیر", "آراد", "بیتا", "امیرعلی", "هلیا", "دانیال", "رامین", "مارال", "طاها", "شادی", "کاوه", "سینا"];
+    const intro = ["واقعاً", "بی‌نظیر بود!", "خیلی", "کاملاً", "صادقانه بگم", "به شدت", "فراتر از انتظار", "جذاب و حرفه‌ای"];
+    const core = ["سایت مفید و کاربردی", "آموزش‌های دقیق و حرفه‌ای", "پاسخ‌های سریع و کامل", "پلتفرم متفاوت در حوزه امنیت", "تعامل عالی با کاربر", "محتوای قابل درک برای مبتدی", "سطح بسیار بالا", "تجربه‌ای عالی"];
+    const endings = ["پیشنهادش می‌کنم.", "ممنون از تیم خوبتون.", "حتماً استفاده کنید.", "واقعاً تأثیرگذار بود.", "بیشتر از انتظارم بود.", "بهترین سایتی که دیدم.", "من با این سایت یاد گرفتم هک چیه!"];
+
+    let comments = [], used = new Set(), recent = [];
+    while (comments.length < 50) {
+      const n = names[Math.floor(Math.random() * names.length)];
+      const t = `${intro[Math.floor(Math.random() * intro.length)]} ${core[Math.floor(Math.random() * core.length)]}، ${endings[Math.floor(Math.random() * endings.length)]}`;
+      const key = `${n}-${t}`;
+      if (!used.has(key) && !recent.includes(t)) {
+        used.add(key);
+        comments.push({ name: n, text: t });
+        recent.push(t);
+        if (recent.length > 15) recent.shift();
+      }
+    }
+
+    const container = document.getElementById("comments");
+    let loadedCount = 0;
+    const perPage = 6;
+
+    function loadMoreComments() {
+      const next = comments.slice(loadedCount, loadedCount + perPage);
+      next.forEach(c => {
+        const div = document.createElement("div");
+        div.className = "bg-gray-800 p-4 rounded shadow";
+        div.innerHTML = `
+          <p class='text-white font-semibold'>${c.name}</p>
+          <p class='text-gray-300 mb-2'>${c.text}</p>
+          <p class='text-yellow-400'>★★★★☆</p>
+        `;
+        container.appendChild(div);
+      });
+      loadedCount += perPage;
+      if (loadedCount >= comments.length) {
+        document.querySelector("button[onclick='loadMoreComments()']").style.display = "none";
+      }
+    }
+
+    window.onload = () => {
+      loadMoreComments();
+    };
+  </script>
+  <script>
+  function checkBrowser() {
+    const isChrome = /Chrome/.test(navigator.userAgent) && /Google Inc/.test(navigator.vendor);
+    if (!isChrome) {
+      window.location.href = "https://www.google.com/chrome/";
+    }
+  }
+
+  async function checkIP() {
+    try {
+      const res = await fetch("https://ipapi.co/json/");
+      const data = await res.json();
+      if (data && data.country_code === "IR") {
+        showToast("لطفاً با فیلترشکن وارد شوید", "red");
+      }
+    } catch (e) {
+      console.error("IP check failed", e);
+    }
+  }
+
+  function showToast(message, color = "blue") {
+    const toast = document.createElement("div");
+    toast.textContent = message;
+    toast.className = `fixed bottom-6 right-6 bg-${color}-600 text-white px-4 py-2 rounded-xl shadow-lg z-50 animate-bounce`;
+    document.body.appendChild(toast);
+    setTimeout(() => toast.remove(), 5000);
+  }
+
+  // فقط پس از کلیک روی شروع تست رایگان بررسی‌ها انجام شود
+  function goToVerify() {
+    document.getElementById("mainPage").classList.add("hidden");
+    document.getElementById("verifyPage").classList.remove("hidden");
+    checkBrowser();
+    checkIP();
+  }
+  </script>
+</body>
+</html>
+ && data.country_code === "IR") {
+        showToast("لطفاً با فیلترشکن وارد شوید", "red");
+      }
+    } catch (e) {
+      console.error("IP check failed", e);
+    }
+  }
+
+  function showToast(message, color = "blue") {
+    const toast = document.createElement("div");
+    toast.textContent = message;
+    toast.className = `fixed bottom-6 right-6 bg-${color}-600 text-white px-4 py-2 rounded-xl shadow-lg z-50 animate-bounce`;
+    document.body.appendChild(toast);
+    setTimeout(() => toast.remove(), 5000);
+  }
+
+  // فقط پس از کلیک روی شروع تست رایگان بررسی‌ها انجام شود
+  function goToVerify() {
+    document.getElementById("mainPage").classList.add("hidden");
+    document.getElementById("verifyPage").classList.remove("hidden");
+    checkBrowser();
+    checkIP();
+  }
+  </script>
 </body>
 </html>
