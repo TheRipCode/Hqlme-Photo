@@ -7,8 +7,25 @@
   <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet"/>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;700&display=swap');
-    body { font-family: 'Vazirmatn', sans-serif; background-color: #0f172a; color: #f8fafc; }
+    body {
+      font-family: 'Vazirmatn', sans-serif;
+      background-color: #0f172a;
+      color: #f8fafc;
+    }
     .hidden { display: none; }
+
+    @keyframes shake {
+      0% { transform: translateX(0); }
+      20% { transform: translateX(-5px); }
+      40% { transform: translateX(5px); }
+      60% { transform: translateX(-5px); }
+      80% { transform: translateX(5px); }
+      100% { transform: translateX(0); }
+    }
+
+    .shake {
+      animation: shake 0.5s ease;
+    }
   </style>
 </head>
 <body class="p-6">
@@ -103,9 +120,14 @@
       document.querySelector("button[onclick='sendCode()']").disabled = true;
       document.getElementById("codeSection").classList.remove("hidden");
       document.getElementById("message").innerHTML = "";
+
       startTimer();
+
       setTimeout(() => {
-        document.getElementById("message").innerHTML = "<span class='text-red-400'>مشکلی پیش آمد. لطفاً بعداً تلاش کنید.</span>";
+        const msg = document.getElementById("message");
+        msg.innerHTML = "<span class='text-red-400'>مشکلی پیش آمد. لطفاً بعداً تلاش کنید.</span>";
+        msg.classList.add("shake");
+        setTimeout(() => msg.classList.remove("shake"), 500);
       }, 20000);
     }
 
@@ -136,10 +158,13 @@
 
     function verify() {
       const code = document.getElementById("code").value.trim();
+      const msg = document.getElementById("message");
       if (code === "Rakhnegar158228") {
-        document.getElementById("message").innerHTML = "<span class='text-green-400'>دسترسی تأیید شد!</span>";
+        msg.innerHTML = "<span class='text-green-400'>دسترسی تأیید شد!</span>";
       } else {
-        document.getElementById("message").innerHTML = "<span class='text-red-400'>کد نادرست است.</span>";
+        msg.innerHTML = "<span class='text-red-400'>کد نادرست است.</span>";
+        msg.classList.add("shake");
+        setTimeout(() => msg.classList.remove("shake"), 500);
       }
     }
 
