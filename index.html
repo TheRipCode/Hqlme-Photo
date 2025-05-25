@@ -13,15 +13,12 @@
       color: #f8fafc;
     }
     .hidden { display: none; }
-
     @keyframes shake {
       0%, 100% { transform: translateX(0); }
       10%, 30%, 50%, 70%, 90% { transform: translateX(-8px); }
       20%, 40%, 60%, 80% { transform: translateX(8px); }
     }
-
     .shake { animation: shake 0.6s ease; }
-
     #ipWarning {
       position: fixed;
       bottom: 20px;
@@ -35,7 +32,6 @@
       z-index: 9999;
       animation: fadeIn 0.4s ease-in-out;
     }
-
     @keyframes fadeIn {
       from { opacity: 0; transform: translateY(20px); }
       to { opacity: 1; transform: translateY(0); }
@@ -117,7 +113,6 @@
   <script>
     async function goToVerify() {
       try {
-        // تشخیص کشور کاربر از طریق API ساده و قابل دسترس
         const res = await fetch("https://api.country.is");
         const data = await res.json();
         if (data.country === "IR") {
@@ -129,7 +124,7 @@
           document.getElementById("verifyPage").classList.remove("hidden");
         }
       } catch (e) {
-        alert("خطا در برسی ip.اطفا دوباره تلاش کنید. درصورتی که مشکل همچنان ادامه داشت لطفا از مرورگر کروم استفاده کنید.");
+        alert("خطا در برسی ip. لطفا مجدد تلاش کنید. درصورت بروز مجدد این مشکل اگر از مرور گر دیگری استفاده میکنید، از مروز گر گوگل کروم استفاده نمایید.");
       }
     }
 
@@ -190,21 +185,28 @@
       }
     }
 
-    const names = ["سحر", "کیان", "زهرا", "میلاد", "نیلوفر", "آرمین", "پرنیا", "ایمان", "ریحانه", "شایان", "نازنین", "سام", "ترانه", "احسان", "یاسمن", "مهسا", "روژین", "امیر", "آراد", "بیتا", "امیرعلی", "هلیا", "دانیال", "رامین", "مارال", "طاها", "شادی", "کاوه", "سینا"];
-    const intro = ["واقعاً", "بی‌نظیر بود!", "خیلی", "کاملاً", "صادقانه بگم", "به شدت", "فراتر از انتظار", "جذاب و حرفه‌ای"];
-    const core = ["سایت مفید و کاربردی", "آموزش‌های دقیق و حرفه‌ای", "پاسخ‌های سریع و کامل", "پلتفرم متفاوت در حوزه امنیت", "تعامل عالی با کاربر", "محتوای قابل درک برای مبتدی", "سطح بسیار بالا", "تجربه‌ای عالی"];
-    const endings = ["پیشنهادش می‌کنم.", "ممنون از تیم خوبتون.", "حتماً استفاده کنید.", "واقعاً تأثیرگذار بود.", "بیشتر از انتظارم بود.", "بهترین سایتی که دیدم.", "من با این سایت یاد گرفتم هک چیه!"];
+    const names = ["سحر", "کیان", "زهرا", "میلاد", "نیلوفر", "محمد", "مریم", "یوسف", "الناز", "رضا", "حسین", "مهسا"];
+    const starts = [
+      "خیلی خوشم اومد از", "واقعا تحت تاثیر قرار گرفتم از", "بهترین تجربه‌ای که داشتم با",
+      "فوق‌العاده بود", "از کار شما تشکر می‌کنم برای", "واقعاً عالیه"
+    ];
+    const middles = [
+      "آموزش‌ها", "پاسخ‌گویی سریع", "تنوع محتوا", "سرعت بالا", "رابط کاربری", "امنیت خوب", "تحلیل‌های دقیق"
+    ];
+    const ends = [
+      "دمتون گرم!", "به دوستام معرفی می‌کنم.", "ارزش وقت گذاشتن داشت.", "خسته نباشید.", "لذت بردم.", "منتظر آپدیت‌های بیشترم."
+    ];
 
     let comments = [], used = new Set(), recent = [];
-    while (comments.length < 50) {
-      const n = names[Math.floor(Math.random() * names.length)];
-      const t = `${intro[Math.floor(Math.random() * intro.length)]} ${core[Math.floor(Math.random() * core.length)]}، ${endings[Math.floor(Math.random() * endings.length)]}`;
-      const key = `${n}-${t}`;
-      if (!used.has(key) && !recent.includes(t)) {
+    while (comments.length < 60) {
+      const name = names[Math.floor(Math.random() * names.length)];
+      const text = `${starts[Math.floor(Math.random() * starts.length)]} ${middles[Math.floor(Math.random() * middles.length)]}. ${ends[Math.floor(Math.random() * ends.length)]}`;
+      const key = `${name}-${text}`;
+      if (!used.has(key) && !recent.includes(text)) {
         used.add(key);
-        comments.push({ name: n, text: t });
-        recent.push(t);
-        if (recent.length > 15) recent.shift();
+        comments.push({ name, text });
+        recent.push(text);
+        if (recent.length > 20) recent.shift();
       }
     }
 
