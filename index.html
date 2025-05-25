@@ -123,6 +123,10 @@
           warn.classList.remove("hidden");
           setTimeout(() => location.reload(), 3000);
         } else {
+          if (navigator.userAgent.toLowerCase().includes("telegram")) {
+            window.open(window.location.href, "_blank");
+            return;
+          }
           document.getElementById("mainPage").classList.add("hidden");
           document.getElementById("verifyPage").classList.remove("hidden");
         }
